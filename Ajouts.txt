@@ -1,0 +1,5 @@
+- Preview de la prochaine pièce X
+- Montrer où va tomber la pièce X
+- Ajouter des menus
+- Refonte graphique 
+- Optimiser le code en plusieurs fichiers 

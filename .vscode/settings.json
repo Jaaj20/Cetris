@@ -1,0 +1,6 @@
+{
+    "files.associations": {
+        "sdl.h": "c",
+        "sdl_ttf.h": "c"
+    }
+}
