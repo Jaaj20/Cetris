@@ -82,48 +82,6 @@ void afficher_plateau(struct color color_tab[], struct plateau plateau_jeu[HAUTE
     }
 }
 
-void startscreen(int *running, int *start_game, int *end_game, SDL_Event event, char Text[64], int SZofText, TTF_Font *police, SDL_Color color, float posX, float posY, SDL_Renderer *renderer)
-{
-    while(!(*running) && !(*start_game))
-    {
-        while (SDL_PollEvent(&event))
-        {
-            switch (event.type)
-            {
-            case SDL_QUIT: /* Appui sur la croix de la fenêtre */
-                *end_game = TRUE;
-                break;
-            case SDL_KEYDOWN:
-                switch (event.key.keysym.sym)
-                {
-                case SDLK_SPACE: /* Descente forcée */
-                    *start_game = TRUE;
-                    break;
-                case SDLK_ESCAPE: /* Fermeture forcée du jeu */
-                    *end_game = TRUE;
-                    break;
-                default:
-                    break;
-                }
-            }
-        }
-    }
-
-    SDL_RenderClear(renderer);
-
-    strcpy(Text, "CETRIS");
-    afficher_texte(Text, SZofText, police, color, (LARGEUR/2)-25, (HAUTEUR/2)-50, renderer);
-    
-    strcpy(Text, "Appuyez sur ESPACE");
-    afficher_texte(Text, SZofText, police, color, (LARGEUR/2)-25, (HAUTEUR/2), renderer);
-
-    strcpy(Text, "ESC pour quitter");
-    afficher_texte(Text, SZofText, police, color, 0, HAUTEUR-50, renderer);
-
-    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255); // Fond noir
-    SDL_RenderPresent(renderer);
-}
-
 void afficher_texte(char Text[64], int SZofText, TTF_Font *police, SDL_Color color, float posX, float posY, SDL_Renderer *renderer)
 {
     snprintf(Text, SZofText, Text);
@@ -185,6 +143,48 @@ void afficher_nbr(int nbr, char Text[64], int SZofText, TTF_Font *police, SDL_Co
         }
         SDL_FreeSurface(surfaceTexte);
     }
+}
+
+void startscreen(int *start_game, int *end_game, SDL_Event event, char Text[64], int SZofText, TTF_Font *police, SDL_Color color, SDL_Renderer *renderer)
+{
+    while(!(*end_game) && !(*start_game))
+    {
+        while (SDL_PollEvent(&event))
+        {
+            switch (event.type)
+            {
+            case SDL_QUIT: /* Appui sur la croix de la fenêtre */
+                *end_game = TRUE;
+                break;
+            case SDL_KEYDOWN:
+                switch (event.key.keysym.sym)
+                {
+                case SDLK_SPACE: /* Descente forcée */
+                    *start_game = TRUE;
+                    break;
+                case SDLK_ESCAPE: /* Fermeture forcée du jeu */
+                    *end_game = TRUE;
+                    break;
+                default:
+                    break;
+                }
+            }
+        }
+    }
+
+    SDL_RenderClear(renderer);
+
+    strcpy(Text, "CETRIS");
+    afficher_texte(Text, SZofText, police, color, (LARGEUR/2)-25, (HAUTEUR/2)-50, renderer);
+    
+    strcpy(Text, "Appuyez sur ESPACE");
+    afficher_texte(Text, SZofText, police, color, (LARGEUR/2)-25, (HAUTEUR/2), renderer);
+
+    strcpy(Text, "ESC pour quitter");
+    afficher_texte(Text, SZofText, police, color, 0, HAUTEUR-50, renderer);
+
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255); // Fond noir
+    SDL_RenderPresent(renderer);
 }
 
 void afficher_viseur(struct piece *p_tetromino, struct color color_tab[], struct plateau plateau_jeu[HAUTEUR][LARGEUR / 2], SDL_Renderer *renderer)
