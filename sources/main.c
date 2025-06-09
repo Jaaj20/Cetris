@@ -84,7 +84,7 @@ int main(int argc, char *argv[])
     /* OUVERTURE DE LA FENETRE GRAPHIQUE */
 
     /*Creation de la fenetre */
-    SDL_Window *fenetre = SDL_CreateWindow("TETRIS", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, LARGEUR * TAILLE_CASE, HAUTEUR * TAILLE_CASE, SDL_WINDOW_SHOWN);
+    SDL_Window *fenetre = SDL_CreateWindow("CETRIS", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, LARGEUR * TAILLE_CASE, HAUTEUR * TAILLE_CASE, SDL_WINDOW_SHOWN);
 
     renderer = SDL_CreateRenderer(fenetre, -1, SDL_RENDERER_ACCELERATED);
 

@@ -1,5 +1,5 @@
 # Nom de l'exécutable
-EXEC = Tetris.exe
+EXEC = Cetris.exe
 
 # Répertoire des sources
 SRC_DIR = sources
