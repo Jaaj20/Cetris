@@ -32,6 +32,8 @@ void initialiser(struct piece *p_tetromino, struct une_case tab[4], int indice)
     p_tetromino->type = indice;
 }
 
+int startscreen();
+
 int supprimer_lignes(struct plateau plateau_jeu[HAUTEUR][LARGEUR / 2], int *score)
 {
     int lig, col, lig_suppr = 0;

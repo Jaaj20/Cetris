@@ -32,7 +32,8 @@ int main(int argc, char *argv[])
 
     /* Fonctionnement de la boucle */
     int descente_OK = 1; /* determine si la piece peut encore descendre */
-    int running = 1;     /* passe a 0 si l'utilsateur utilise la touche ESCAPE permet un arret premature de la partie*/
+    int start_game = 0; /* passe a 1 lorsque l'utilisateur appuie sur ESPACE dans l'écran d'accueil */
+    int end_game = 0;     /* passe a 1 si l'utilsateur utilise la touche ESCAPE permet un arret premature de la partie  */
     int cpt = 0, niveau = 0, score = 0;
     SDL_TimerID horloge;     /* l'identifiant de l'horloge qui cadence la chute des pieces */
     Uint32 intervalle = 500; /* la periode de l'horloge (en ms) */
@@ -113,7 +114,7 @@ int main(int argc, char *argv[])
             switch (event.type)
             {
             case SDL_QUIT: /* Appui sur la croix de la fenêtre */
-                running = 0;
+                end_game = 1;
                 break;
             case SDL_USEREVENT: /* Aucune action du Joueur */
                 GoDown = TRUE;
@@ -140,7 +141,7 @@ int main(int argc, char *argv[])
                     HardDrop = TRUE;
                     break;
                 case SDLK_ESCAPE: /* Fermeture forcée du jeu */
-                    running = 0;
+                    end_game = 1;
                     break;
                 default:
                     break;
@@ -171,19 +172,19 @@ int main(int argc, char *argv[])
                 /* on verifie si la partie est perdue */
                 if (partie_perdue(plateau_jeu) != 0)
                 {
-                    while (!NewGame && running)
+                    while (!NewGame && !end_game)
                     {
                         SDL_WaitEvent(&event);
                         switch (event.type)
                         {
                         case SDL_QUIT:
-                            running = 0;
+                            end_game = 1;
                             break;
                         case SDL_KEYDOWN:
                             switch (event.key.keysym.sym)
                             {
                             case SDLK_ESCAPE:
-                                running = 0;
+                                end_game = 1;
                                 break;
                             case SDLK_r:
                                 NewGame = TRUE;
@@ -247,19 +248,19 @@ int main(int argc, char *argv[])
             /* on verifie si la partie est perdue */
             if (partie_perdue(plateau_jeu) != 0)
             {
-                while (!NewGame && running)
+                while (!NewGame && !end_game)
                 {
                     SDL_WaitEvent(&event);
                     switch (event.type)
                     {
                     case SDL_QUIT:
-                        running = 0;
+                        end_game = 1;
                         break;
                     case SDL_KEYDOWN:
                         switch (event.key.keysym.sym)
                         {
                         case SDLK_ESCAPE:
-                            running = 0;
+                            end_game = 0;
                             break;
                         case SDLK_r:
                             NewGame = TRUE;
@@ -309,7 +310,7 @@ int main(int argc, char *argv[])
         }
 
         /* Gestion du rendu graphique*/
-        if (running)
+        if (!end_game)
         {
             SDL_RenderClear(renderer);
             afficher_plateau(color_tab, plateau_jeu, renderer);
@@ -338,7 +339,7 @@ int main(int argc, char *argv[])
             SDL_RenderPresent(renderer);
         }
 
-    } while (running);
+    } while (!end_game);
 
     TTF_CloseFont(police);
     SDL_DestroyRenderer(renderer);
