@@ -22,4 +22,7 @@ void afficher_texte(char Text[64], int SZofText, TTF_Font *police, SDL_Color col
 /* Afficher un nombre dans la fenêtre */
 void afficher_nbr(int nbr, char Text[64], int SZofText, TTF_Font *police, SDL_Color color, float posX, float posY, SDL_Renderer *renderer);
 
+/* Affiche un écran d'accueil */
+void startscreen(int *start_game, int *end_game, SDL_Event event, char Text[64], int SZofText, TTF_Font *police, SDL_Color color, SDL_Renderer *renderer);
+
 #endif

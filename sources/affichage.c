@@ -48,8 +48,8 @@ void afficher_plateau(struct color color_tab[], struct plateau plateau_jeu[HAUTE
             rect = (SDL_Rect){col * TAILLE_CASE, lig * TAILLE_CASE, TAILLE_CASE, TAILLE_CASE};
             SDL_SetRenderDrawColor(renderer, color_tab[plateau_jeu[lig][col].carre].r, color_tab[plateau_jeu[lig][col].carre].g, color_tab[plateau_jeu[lig][col].carre].b, 255);
             SDL_RenderFillRect(renderer, &rect);
-            }
-        
+        }
+
         /* Ligne de séparation entre plateau de jeu et l'affiche de la preview/score */
         rect = (SDL_Rect){(LARGEUR / 2) * TAILLE_CASE, lig * TAILLE_CASE, TAILLE_CASE / 2, TAILLE_CASE};
         SDL_SetRenderDrawColor(renderer, color_tab[8].r, color_tab[8].g, color_tab[8].b, 255);
@@ -147,7 +147,7 @@ void afficher_nbr(int nbr, char Text[64], int SZofText, TTF_Font *police, SDL_Co
 
 void startscreen(int *start_game, int *end_game, SDL_Event event, char Text[64], int SZofText, TTF_Font *police, SDL_Color color, SDL_Renderer *renderer)
 {
-    while(!(*end_game) && !(*start_game))
+    while (!(*end_game) && !(*start_game))
     {
         while (SDL_PollEvent(&event))
         {
@@ -170,21 +170,21 @@ void startscreen(int *start_game, int *end_game, SDL_Event event, char Text[64],
                 }
             }
         }
+
+        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255); // Fond noir
+        SDL_RenderClear(renderer);
+
+        strcpy(Text, "CETRIS");
+        afficher_texte(Text, SZofText, police, color, (LARGEUR*TAILLE_CASE / 2) - 50, (HAUTEUR*TAILLE_CASE / 2) - 50, renderer);
+
+        strcpy(Text, "Appuyez sur ESPACE");
+        afficher_texte(Text, SZofText, police, color, (LARGEUR*TAILLE_CASE / 2) - 125, (HAUTEUR*TAILLE_CASE / 2), renderer);
+
+        strcpy(Text, "ESC pour quitter");
+        afficher_texte(Text, SZofText, police, color, 0, HAUTEUR*TAILLE_CASE - 25, renderer);
+
+        SDL_RenderPresent(renderer);
     }
-
-    SDL_RenderClear(renderer);
-
-    strcpy(Text, "CETRIS");
-    afficher_texte(Text, SZofText, police, color, (LARGEUR/2)-25, (HAUTEUR/2)-50, renderer);
-    
-    strcpy(Text, "Appuyez sur ESPACE");
-    afficher_texte(Text, SZofText, police, color, (LARGEUR/2)-25, (HAUTEUR/2), renderer);
-
-    strcpy(Text, "ESC pour quitter");
-    afficher_texte(Text, SZofText, police, color, 0, HAUTEUR-50, renderer);
-
-    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255); // Fond noir
-    SDL_RenderPresent(renderer);
 }
 
 void afficher_viseur(struct piece *p_tetromino, struct color color_tab[], struct plateau plateau_jeu[HAUTEUR][LARGEUR / 2], SDL_Renderer *renderer)

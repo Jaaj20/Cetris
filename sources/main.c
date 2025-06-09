@@ -46,6 +46,7 @@ int main(int argc, char *argv[])
     char Text[64];
     int SZofText = sizeof(Text);
     float posX, posY;
+    SDL_Color white = {255, 255, 255, 255};
 
     struct plateau plateau_jeu[HAUTEUR][LARGEUR / 2];
     struct piece tetromino;
@@ -99,6 +100,8 @@ int main(int argc, char *argv[])
     }
 
     /* BOUCLE DE JEU */
+
+    startscreen(&start_game, &end_game, event, Text, SZofText, police, white, renderer);
 
     /* Choix et creation de la piece */
     indice = rand() % 7;
@@ -314,8 +317,6 @@ int main(int argc, char *argv[])
         {
             SDL_RenderClear(renderer);
             afficher_plateau(color_tab, plateau_jeu, renderer);
-
-            SDL_Color white = {255, 255, 255, 255};
 
             strcpy(Text, "Score:");
             posX = 2.6 * (LARGEUR * TAILLE_CASE) / 4, posY = (HAUTEUR * TAILLE_CASE) / 2;
