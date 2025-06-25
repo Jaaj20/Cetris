@@ -7,14 +7,20 @@ int main(int argc, char *argv[])
 {
     (void)argc;
     (void)argv;
-    
+
     srand(time(NULL));
-    SDL_Init(SDL_INIT_EVERYTHING);
+
+    /* Initialisation de SDL */
+    if (SDL_Init(SDL_INIT_EVERYTHING) != 0)
+    {
+        fprintf(stderr, "Erreur SDL_Init : %s\n", SDL_GetError());
+        exit(1);
+    }
 
     if (TTF_Init() == -1)
     {
         printf("TTF_Init: %s\n", TTF_GetError());
-        exit(2);
+        exit(1);
     }
 
     /* DECLARATIONS */
@@ -31,8 +37,11 @@ int main(int argc, char *argv[])
     int NewGame = FALSE;
 
     /* Fonctionnement de la boucle */
-    int descente_OK = 1; /* determine si la piece peut encore descendre */
-    int running = 1;     /* passe a 0 si l'utilsateur utilise la touche ESCAPE permet un arret premature de la partie*/
+    int descente_OK = TRUE; /* determine si la piece peut encore descendre */
+    int start_game = FALSE; /* passe a TRUE lorsque l'utilisateur appuie sur ESPACE dans l'écran d'accueil */
+    int end_game = FALSE;   /* passe a TRUE si l'utilsateur utilise la touche ESCAPE permet un arret premature de la partie  */
+    int Pause = FALSE;
+    int retour_accueil = FALSE;
     int cpt = 0, niveau = 0, score = 0;
     SDL_TimerID horloge;     /* l'identifiant de l'horloge qui cadence la chute des pieces */
     Uint32 intervalle = 500; /* la periode de l'horloge (en ms) */
@@ -45,6 +54,7 @@ int main(int argc, char *argv[])
     char Text[64];
     int SZofText = sizeof(Text);
     float posX, posY;
+    SDL_Color white = {255, 255, 255, 255};
 
     struct plateau plateau_jeu[HAUTEUR][LARGEUR / 2];
     struct piece tetromino;
@@ -85,8 +95,16 @@ int main(int argc, char *argv[])
 
     /*Creation de la fenetre */
     SDL_Window *fenetre = SDL_CreateWindow("CETRIS", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, LARGEUR * TAILLE_CASE, HAUTEUR * TAILLE_CASE, SDL_WINDOW_SHOWN);
+    if (fenetre == NULL)
+    {
+        fprintf(stderr, "Erreur SDL_CreateWindow : %s\n", SDL_GetError());
+    }
 
     renderer = SDL_CreateRenderer(fenetre, -1, SDL_RENDERER_ACCELERATED);
+    if (renderer == NULL)
+    {
+        fprintf(stderr, "Erreur SDL_CreateRenderer : %s\n", SDL_GetError());
+    }
 
     /* at_top_horloge est appelee a chaque echeance de intervalle */
     horloge = SDL_AddTimer(intervalle, at_top_horloge, NULL);
@@ -98,6 +116,7 @@ int main(int argc, char *argv[])
     }
 
     /* BOUCLE DE JEU */
+    start_screen(&start_game, &end_game, Text, SZofText, police, white, renderer);
 
     /* Choix et creation de la piece */
     indice = rand() % 7;
@@ -113,7 +132,7 @@ int main(int argc, char *argv[])
             switch (event.type)
             {
             case SDL_QUIT: /* Appui sur la croix de la fenêtre */
-                running = 0;
+                end_game = 1;
                 break;
             case SDL_USEREVENT: /* Aucune action du Joueur */
                 GoDown = TRUE;
@@ -139,8 +158,8 @@ int main(int argc, char *argv[])
                 case SDLK_SPACE: /* Hard Drop */
                     HardDrop = TRUE;
                     break;
-                case SDLK_ESCAPE: /* Fermeture forcée du jeu */
-                    running = 0;
+                case SDLK_ESCAPE: /* Entrer dans le menu pause */
+                    Pause = TRUE;
                     break;
                 default:
                     break;
@@ -149,6 +168,22 @@ int main(int argc, char *argv[])
         }
 
         /* Gestion des actions */
+        if (Pause)
+        {
+            menu_pause(&Pause, &end_game, &retour_accueil, Text, SZofText, police, white, renderer);
+        }
+
+        if(retour_accueil)
+        {
+            start_game = FALSE;
+
+            start_screen(&start_game, &end_game, Text, SZofText, police, white, renderer);
+            
+            Pause = FALSE;
+            NewGame = TRUE;
+            retour_accueil = FALSE;
+        }
+
         if (GoDown)
         {
             descente_OK = descendre(plateau_jeu, &tetromino);
@@ -171,19 +206,19 @@ int main(int argc, char *argv[])
                 /* on verifie si la partie est perdue */
                 if (partie_perdue(plateau_jeu) != 0)
                 {
-                    while (!NewGame && running)
+                    while (!NewGame && !end_game)
                     {
                         SDL_WaitEvent(&event);
                         switch (event.type)
                         {
                         case SDL_QUIT:
-                            running = 0;
+                            end_game = TRUE;
                             break;
                         case SDL_KEYDOWN:
                             switch (event.key.keysym.sym)
                             {
                             case SDLK_ESCAPE:
-                                running = 0;
+                                end_game = TRUE;
                                 break;
                             case SDLK_r:
                                 NewGame = TRUE;
@@ -247,19 +282,19 @@ int main(int argc, char *argv[])
             /* on verifie si la partie est perdue */
             if (partie_perdue(plateau_jeu) != 0)
             {
-                while (!NewGame && running)
+                while (!NewGame && !end_game)
                 {
                     SDL_WaitEvent(&event);
                     switch (event.type)
                     {
                     case SDL_QUIT:
-                        running = 0;
+                        end_game = TRUE;
                         break;
                     case SDL_KEYDOWN:
                         switch (event.key.keysym.sym)
                         {
                         case SDLK_ESCAPE:
-                            running = 0;
+                            end_game = FALSE;
                             break;
                         case SDLK_r:
                             NewGame = TRUE;
@@ -309,12 +344,10 @@ int main(int argc, char *argv[])
         }
 
         /* Gestion du rendu graphique*/
-        if (running)
+        if (!end_game)
         {
             SDL_RenderClear(renderer);
             afficher_plateau(color_tab, plateau_jeu, renderer);
-
-            SDL_Color white = {255, 255, 255, 255};
 
             strcpy(Text, "Score:");
             posX = 2.6 * (LARGEUR * TAILLE_CASE) / 4, posY = (HAUTEUR * TAILLE_CASE) / 2;
@@ -338,7 +371,7 @@ int main(int argc, char *argv[])
             SDL_RenderPresent(renderer);
         }
 
-    } while (running);
+    } while (!end_game);
 
     TTF_CloseFont(police);
     SDL_DestroyRenderer(renderer);
