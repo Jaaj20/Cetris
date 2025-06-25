@@ -147,6 +147,7 @@ void afficher_nbr(int nbr, char Text[64], int SZofText, TTF_Font *police, SDL_Co
 
 void start_screen(int *start_game, int *end_game, char Text[64], int SZofText, TTF_Font *police, SDL_Color color, SDL_Renderer *renderer)
 {
+    int posX, posY, w, h;
     while (!(*end_game) && !(*start_game))
     {
         SDL_Event event;
@@ -177,11 +178,17 @@ void start_screen(int *start_game, int *end_game, char Text[64], int SZofText, T
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255); // Fond noir
         SDL_RenderClear(renderer);
 
+        TTF_SizeText(police, "CETRIS", &w, &h);
+        posX = (LARGEUR * TAILLE_CASE - w) / 2;
+        posY = (HAUTEUR * TAILLE_CASE / 2) - 50;
         strcpy(Text, "CETRIS");
-        afficher_texte(Text, SZofText, police, color, (LARGEUR * TAILLE_CASE / 2) - 50, (HAUTEUR * TAILLE_CASE / 2) - 50, renderer);
+        afficher_texte(Text, SZofText, police, color, posX, posY, renderer);
 
+        TTF_SizeText(police, "Appuyez sur ESCAPE", &w, &h);
+        posX = (LARGEUR * TAILLE_CASE - w) / 2;
+        posY = (HAUTEUR * TAILLE_CASE / 2);
         strcpy(Text, "Appuyez sur ESPACE");
-        afficher_texte(Text, SZofText, police, color, (LARGEUR * TAILLE_CASE / 2) - 125, (HAUTEUR * TAILLE_CASE / 2), renderer);
+        afficher_texte(Text, SZofText, police, color, posX, posY, renderer);
 
         strcpy(Text, "ESC pour quitter");
         afficher_texte(Text, SZofText, police, color, 0, HAUTEUR * TAILLE_CASE - 25, renderer);
