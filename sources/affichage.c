@@ -145,10 +145,11 @@ void afficher_nbr(int nbr, char Text[64], int SZofText, TTF_Font *police, SDL_Co
     }
 }
 
-void startscreen(int *start_game, int *end_game, SDL_Event event, char Text[64], int SZofText, TTF_Font *police, SDL_Color color, SDL_Renderer *renderer)
+void start_screen(int *start_game, int *end_game, char Text[64], int SZofText, TTF_Font *police, SDL_Color color, SDL_Renderer *renderer)
 {
     while (!(*end_game) && !(*start_game))
     {
+        SDL_Event event;
         while (SDL_PollEvent(&event))
         {
             switch (event.type)
@@ -168,6 +169,8 @@ void startscreen(int *start_game, int *end_game, SDL_Event event, char Text[64],
                 default:
                     break;
                 }
+            default:
+                break;
             }
         }
 
@@ -175,13 +178,13 @@ void startscreen(int *start_game, int *end_game, SDL_Event event, char Text[64],
         SDL_RenderClear(renderer);
 
         strcpy(Text, "CETRIS");
-        afficher_texte(Text, SZofText, police, color, (LARGEUR*TAILLE_CASE / 2) - 50, (HAUTEUR*TAILLE_CASE / 2) - 50, renderer);
+        afficher_texte(Text, SZofText, police, color, (LARGEUR * TAILLE_CASE / 2) - 50, (HAUTEUR * TAILLE_CASE / 2) - 50, renderer);
 
         strcpy(Text, "Appuyez sur ESPACE");
-        afficher_texte(Text, SZofText, police, color, (LARGEUR*TAILLE_CASE / 2) - 125, (HAUTEUR*TAILLE_CASE / 2), renderer);
+        afficher_texte(Text, SZofText, police, color, (LARGEUR * TAILLE_CASE / 2) - 125, (HAUTEUR * TAILLE_CASE / 2), renderer);
 
         strcpy(Text, "ESC pour quitter");
-        afficher_texte(Text, SZofText, police, color, 0, HAUTEUR*TAILLE_CASE - 25, renderer);
+        afficher_texte(Text, SZofText, police, color, 0, HAUTEUR * TAILLE_CASE - 25, renderer);
 
         SDL_RenderPresent(renderer);
     }
@@ -192,4 +195,56 @@ void afficher_viseur(struct piece *p_tetromino, struct color color_tab[], struct
     struct piece viseur = *p_tetromino;
     hard_drop(plateau_jeu, &viseur);
     afficher_piece(viseur, color_tab[8], renderer);
+}
+
+void menu_pause(int *pause, int *end_game, char Text[64], int SZofText, TTF_Font *police, SDL_Color color, SDL_Renderer *renderer)
+{
+    int choix = 0;
+    SDL_Event event;
+
+    while (*pause && !(*end_game))
+    {
+        while (SDL_PollEvent(&event))
+        {
+            switch (event.type)
+            {
+            case SDL_QUIT: /* Appui sur la croix de la fenêtre */
+                *end_game = TRUE;
+                break;
+            case SDL_KEYDOWN:
+                switch (event.key.keysym.sym)
+                {
+                case SDLK_RETURN:
+                    //*start_game = TRUE;
+                    break;
+                case SDLK_ESCAPE: 
+                    *pause = FALSE;
+                    break;
+                // case SDLK_DOWN:
+                //     if (choix <= 2)
+                //         choix++;
+                //     else
+                //         choix == 0;
+                //     break;
+                // case SDLK_UP:
+                //     if (choix >= 0)
+                //         choix--;
+                //     else
+                //         choix == 3;
+                //     break;
+                default:
+                    break;
+                }
+            }
+        }
+
+        printf("Pause: %d\n", *pause);
+        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255); // Fond noir
+        SDL_RenderClear(renderer);
+
+        strcpy(Text, "Pause");
+        afficher_texte(Text, SZofText, police, color, (LARGEUR * TAILLE_CASE / 2) - 45, (HAUTEUR * TAILLE_CASE / 2) - 50, renderer);
+
+        SDL_RenderPresent(renderer);
+    }
 }
