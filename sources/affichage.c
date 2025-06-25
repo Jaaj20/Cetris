@@ -247,7 +247,6 @@ void menu_pause(int *pause, int *end_game, int *retour_accueil, char Text[64], i
 
         posX = (LARGEUR * TAILLE_CASE / 2) - 40;
         posY = (HAUTEUR * TAILLE_CASE / 4);
-        printf("Pause: %d\n", *pause);
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255); // Fond noir
         SDL_RenderClear(renderer);
         
