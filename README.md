@@ -7,9 +7,11 @@ Tetris codé en C en tant que projet perso pour apprendre le langage
 - SDL2_ttf (https://github.com/libsdl-org/SDL_ttf/releases/tag/release-2.24.0)
 
 ## Comment jouer ?
-1. Télécharger le dossier complet
+1. Télécharger SDL2, SDL2_ttf, leurs fichiers .dll respectifs et l'éxécutable du jeu.
 
-2. Ouvrir l'éxécutable
+2. Tout mettre dans le même dossier
+
+3. Ouvrir l'éxécutable
 
 ## Contrôles
 Quitter: **ESC**
