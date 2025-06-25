@@ -14,7 +14,7 @@ Tetris codé en C en tant que projet perso pour apprendre le langage
 3. Ouvrir l'éxécutable
 
 ## Contrôles
-Quitter: **ESC**
+Menu Pause: **ESC**
 
 Recommencer une partie (a la fin de celle-ci): **R**
 
@@ -23,6 +23,10 @@ Descendre: **FLECHE BAS**
 Droite: **FLECHE DROITE**
 
 Gauche: **FLECHE GAUCHE**
+
+Rotation vers la droite: **G**
+
+Rotation vers la gauche: **D**
 
 Hard Drop: **ESPACE**
 
