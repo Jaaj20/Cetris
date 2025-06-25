@@ -282,6 +282,7 @@ int main(int argc, char *argv[])
             /* on verifie si la partie est perdue */
             if (partie_perdue(plateau_jeu) != 0)
             {
+                
                 while (!NewGame && !end_game)
                 {
                     SDL_WaitEvent(&event);

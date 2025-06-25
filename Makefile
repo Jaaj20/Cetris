@@ -28,6 +28,5 @@ $(SRC_DIR)/%.o: $(SRC_DIR)/%.c
 # Nettoyer pour PowerShell / cmd
 clean:
 	@rm -f $(SRC_DIR)/*.o
-	@rm -f $(EXEC)
 
 rebuild: clean all
