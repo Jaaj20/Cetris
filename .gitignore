@@ -1,5 +1,2 @@
 *.o 
-*.exe
 cahier_TME-etudiants_2023_2024.pdf 
-SDL2/*
-SDL2ttf/*
