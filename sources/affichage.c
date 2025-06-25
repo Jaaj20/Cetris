@@ -160,7 +160,7 @@ void start_screen(int *start_game, int *end_game, char Text[64], int SZofText, T
             case SDL_KEYDOWN:
                 switch (event.key.keysym.sym)
                 {
-                case SDLK_SPACE: /* Descente forcée */
+                case SDLK_SPACE: /* Démarrer */
                     *start_game = TRUE;
                     break;
                 case SDLK_ESCAPE: /* Fermeture forcée du jeu */
@@ -197,12 +197,12 @@ void afficher_viseur(struct piece *p_tetromino, struct color color_tab[], struct
     afficher_piece(viseur, color_tab[8], renderer);
 }
 
-void menu_pause(int *pause, int *end_game, char Text[64], int SZofText, TTF_Font *police, SDL_Color color, SDL_Renderer *renderer)
+void menu_pause(int *pause, int *end_game, int *retour_accueil, char Text[64], int SZofText, TTF_Font *police, SDL_Color color, SDL_Renderer *renderer)
 {
-    int choix = 0;
+    int choix = 0, selection = 0; // choix == 0 Reprendre, == 1 Retourner à l'écran d'accueil, ==2 Quitter le jeu
     SDL_Event event;
-
-    while (*pause && !(*end_game))
+    int posX, posY, w, h;
+    while (*pause && !(*end_game) && !(*retour_accueil))
     {
         while (SDL_PollEvent(&event))
         {
@@ -215,35 +215,115 @@ void menu_pause(int *pause, int *end_game, char Text[64], int SZofText, TTF_Font
                 switch (event.key.keysym.sym)
                 {
                 case SDLK_RETURN:
-                    //*start_game = TRUE;
+                    selection = TRUE;
                     break;
-                case SDLK_ESCAPE: 
+                case SDLK_ESCAPE:
                     *pause = FALSE;
                     break;
-                // case SDLK_DOWN:
-                //     if (choix <= 2)
-                //         choix++;
-                //     else
-                //         choix == 0;
-                //     break;
-                // case SDLK_UP:
-                //     if (choix >= 0)
-                //         choix--;
-                //     else
-                //         choix == 3;
-                //     break;
+                case SDLK_DOWN:
+                    if (choix < 2)
+                        choix++;
+                    else
+                        choix = 0;
+                    break;
+                case SDLK_UP:
+                    if (choix > 0)
+                        choix--;
+                    else
+                        choix = 2;
+                    break;
                 default:
                     break;
                 }
             }
         }
 
+        posX = (LARGEUR * TAILLE_CASE / 2) - 40;
+        posY = (HAUTEUR * TAILLE_CASE / 4);
         printf("Pause: %d\n", *pause);
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255); // Fond noir
         SDL_RenderClear(renderer);
-
+        
+        TTF_SizeText(police, "> Reprendre", &w, &h);
         strcpy(Text, "Pause");
-        afficher_texte(Text, SZofText, police, color, (LARGEUR * TAILLE_CASE / 2) - 45, (HAUTEUR * TAILLE_CASE / 2) - 50, renderer);
+        afficher_texte(Text, SZofText, police, color, posX, posY, renderer);
+
+        if (selection)
+        {
+            if (choix == 0)
+            {
+                *pause = FALSE;
+            }
+            if (choix == 1)
+            {
+                *retour_accueil = TRUE;
+            }
+            if (choix == 2)
+            {
+                *end_game = TRUE;
+            }
+        }
+
+        if (choix == 0)
+        {
+            TTF_SizeText(police, "> Reprendre", &w, &h);
+            posX = (LARGEUR * TAILLE_CASE - w) / 2;
+            posY = (HAUTEUR * TAILLE_CASE / 2) - 20;
+            strcpy(Text, "> Reprendre");
+            afficher_texte(Text, SZofText, police, color, posX, posY, renderer);
+
+            TTF_SizeText(police, "Ecran d'accueil", &w, &h);
+            posX = (LARGEUR * TAILLE_CASE - w) / 2;
+            posY = (HAUTEUR * TAILLE_CASE / 2);
+            strcpy(Text, "Ecran d'accueil");
+            afficher_texte(Text, SZofText, police, color, posX, posY, renderer);
+
+            TTF_SizeText(police, "Quitter", &w, &h);
+            posX = (LARGEUR * TAILLE_CASE - w) / 2;
+            posY = (HAUTEUR * TAILLE_CASE / 2) + 20;
+            strcpy(Text, "Quitter");
+            afficher_texte(Text, SZofText, police, color, posX, posY, renderer);
+        }
+        if (choix == 1)
+        {
+            TTF_SizeText(police, "Reprendre", &w, &h);
+            posX = (LARGEUR * TAILLE_CASE - w) / 2;
+            posY = (HAUTEUR * TAILLE_CASE / 2) - 20;
+            strcpy(Text, "Reprendre");
+            afficher_texte(Text, SZofText, police, color, posX, posY, renderer);
+
+            TTF_SizeText(police, "> Ecran d'accueil", &w, &h);
+            posX = (LARGEUR * TAILLE_CASE - w) / 2;
+            posY = (HAUTEUR * TAILLE_CASE / 2);
+            strcpy(Text, "> Ecran d'accueil");
+            afficher_texte(Text, SZofText, police, color, posX, posY, renderer);
+
+            TTF_SizeText(police, "Quitter", &w, &h);
+            posX = (LARGEUR * TAILLE_CASE - w) / 2;
+            posY = (HAUTEUR * TAILLE_CASE / 2) + 20;
+            strcpy(Text, "Quitter");
+            afficher_texte(Text, SZofText, police, color, posX, posY, renderer);
+        }
+        if (choix == 2)
+        {
+            TTF_SizeText(police, "Reprendre", &w, &h);
+            posX = (LARGEUR * TAILLE_CASE - w) / 2;
+            posY = (HAUTEUR * TAILLE_CASE / 2) - 20;
+            strcpy(Text, "Reprendre");
+            afficher_texte(Text, SZofText, police, color, posX, posY, renderer);
+
+            TTF_SizeText(police, "Ecran d'accueil", &w, &h);
+            posX = (LARGEUR * TAILLE_CASE - w) / 2;
+            posY = (HAUTEUR * TAILLE_CASE / 2);
+            strcpy(Text, "Ecran d'accueil");
+            afficher_texte(Text, SZofText, police, color, posX, posY, renderer);
+
+            TTF_SizeText(police, "> Quitter", &w, &h);
+            posX = (LARGEUR * TAILLE_CASE - w) / 2;
+            posY = (HAUTEUR * TAILLE_CASE / 2) + 20;
+            strcpy(Text, "> Quitter");
+            afficher_texte(Text, SZofText, police, color, posX, posY, renderer);
+        }
 
         SDL_RenderPresent(renderer);
     }

@@ -41,6 +41,7 @@ int main(int argc, char *argv[])
     int start_game = FALSE; /* passe a TRUE lorsque l'utilisateur appuie sur ESPACE dans l'écran d'accueil */
     int end_game = FALSE;   /* passe a TRUE si l'utilsateur utilise la touche ESCAPE permet un arret premature de la partie  */
     int Pause = FALSE;
+    int retour_accueil = FALSE;
     int cpt = 0, niveau = 0, score = 0;
     SDL_TimerID horloge;     /* l'identifiant de l'horloge qui cadence la chute des pieces */
     Uint32 intervalle = 500; /* la periode de l'horloge (en ms) */
@@ -169,7 +170,18 @@ int main(int argc, char *argv[])
         /* Gestion des actions */
         if (Pause)
         {
-            menu_pause(&Pause, &end_game, Text, SZofText, police, white, renderer);
+            menu_pause(&Pause, &end_game, &retour_accueil, Text, SZofText, police, white, renderer);
+        }
+
+        if(retour_accueil)
+        {
+            start_game = FALSE;
+
+            start_screen(&start_game, &end_game, Text, SZofText, police, white, renderer);
+            
+            Pause = FALSE;
+            NewGame = TRUE;
+            retour_accueil = FALSE;
         }
 
         if (GoDown)
