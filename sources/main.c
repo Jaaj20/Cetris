@@ -10,7 +10,8 @@ int main(int argc, char *argv[])
 
     srand(time(NULL));
 
-    /* Initialisation de SDL */
+    /* Initialisation de SDL et SDL_ttf */
+
     if (SDL_Init(SDL_INIT_EVERYTHING) != 0)
     {
         fprintf(stderr, "Erreur SDL_Init : %s\n", SDL_GetError());
@@ -23,11 +24,14 @@ int main(int argc, char *argv[])
         exit(1);
     }
 
+
     /* DECLARATIONS */
 
     int indice; /* l'indice (type) de la piece jouee */
 
+
     /* Actions du Joueur */
+
     int GotoLeft = FALSE;
     int GotoRight = FALSE;
     int RotateLeft = FALSE;
@@ -36,7 +40,9 @@ int main(int argc, char *argv[])
     int HardDrop = FALSE;
     int NewGame = FALSE;
 
+
     /* Fonctionnement de la boucle */
+
     int descente_OK = TRUE; /* determine si la piece peut encore descendre */
     int start_game = FALSE; /* passe a TRUE lorsque l'utilisateur appuie sur ESPACE dans l'écran d'accueil */
     int end_game = FALSE;   /* passe a TRUE si l'utilsateur utilise la touche ESCAPE permet un arret premature de la partie  */
@@ -47,22 +53,26 @@ int main(int argc, char *argv[])
     Uint32 intervalle = 500; /* la periode de l'horloge (en ms) */
 
     /* Besoins de SDL */
-    SDL_Event event; /* l'evenement a traiter */
-    SDL_Renderer *renderer = NULL;
 
-    /* Allocation de l'espace du texte */
-    char Text[64];
-    int SZofText = sizeof(Text);
-    float posX, posY;
-    SDL_Color white = {255, 255, 255, 255};
+    SDL_Event event;                    /* l'evenement a traiter */
+    SDL_Renderer *renderer = NULL;      /* gere le rendu graphique de la fênetre */
+
+
+    /* Allocation de l'espace du texte et ses paramètres */
+
+    char Text[64];                              /* Tableau contenant le texte*/
+    int SZofText = sizeof(Text);                /* Taille de la chaîne de caractères */
+    float posX, posY;                           /* Coordonnées du texte affiché  */
+    SDL_Color white = {255, 255, 255, 255};     /* Couleur du texte */
 
     struct plateau plateau_jeu[HAUTEUR][LARGEUR / 2];
     struct piece tetromino;
     struct piece preview;
 
+
     /* INITIALISATIONS */
 
-    struct une_case tab_pieces[7][4] = {
+    struct une_case tab_pieces[7][4] = {    /* Tableau contenant les pièces */
         {{0, 0}, {0, 1}, {1, 0}, {1, 1}}, // O
         {{0, 0}, {0, 1}, {0, 2}, {0, 3}}, // I
         {{0, 0}, {0, 1}, {0, 2}, {1, 2}}, // L
@@ -72,7 +82,7 @@ int main(int argc, char *argv[])
         {{0, 1}, {1, 0}, {1, 1}, {2, 1}}, // T
     };
 
-    struct color color_tab[] = {
+    struct color color_tab[] = {            /* Tableau contenant les couleurs des pièces */
         {"yellow", 255, 233, 38},
         {"cyan", 0, 255, 255},
         {"orange", 255, 140, 0},
@@ -83,6 +93,8 @@ int main(int argc, char *argv[])
         {"black", 0, 0, 0},
         {"dark grey", 50, 50, 50}};
 
+    /* Initialisation du plateau de jeu vide */    
+
     for (int i = 0; i < HAUTEUR; i++)
     {
         for (int j = 0; j < LARGEUR / 2; j++)
@@ -90,24 +102,9 @@ int main(int argc, char *argv[])
             plateau_jeu[i][j].carre = VIDE;
         }
     }
+    
 
-    /* OUVERTURE DE LA FENETRE GRAPHIQUE */
-
-    /*Creation de la fenetre */
-    SDL_Window *fenetre = SDL_CreateWindow("CETRIS", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, LARGEUR * TAILLE_CASE, HAUTEUR * TAILLE_CASE, SDL_WINDOW_SHOWN);
-    if (fenetre == NULL)
-    {
-        fprintf(stderr, "Erreur SDL_CreateWindow : %s\n", SDL_GetError());
-    }
-
-    renderer = SDL_CreateRenderer(fenetre, -1, SDL_RENDERER_ACCELERATED);
-    if (renderer == NULL)
-    {
-        fprintf(stderr, "Erreur SDL_CreateRenderer : %s\n", SDL_GetError());
-    }
-
-    /* at_top_horloge est appelee a chaque echeance de intervalle */
-    horloge = SDL_AddTimer(intervalle, at_top_horloge, NULL);
+    /* Initialisation de la police */
 
     TTF_Font *police = TTF_OpenFont("SDL2ttf/Minecraft.ttf", 24);
     if (police == NULL)
@@ -115,14 +112,44 @@ int main(int argc, char *argv[])
         fprintf(stderr, "ERREUR FATALE : Impossible de charger la police. TTF_OpenFont: %s\n", TTF_GetError());
     }
 
-    /* BOUCLE DE JEU */
-    start_screen(&start_game, &end_game, Text, SZofText, police, white, renderer);
 
-    /* Choix et creation de la piece */
+    /* OUVERTURE DE LA FENETRE GRAPHIQUE */
+
+
+    /*Creation de la fenetre */
+
+    SDL_Window *fenetre = SDL_CreateWindow("CETRIS", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, LARGEUR * TAILLE_CASE, HAUTEUR * TAILLE_CASE, SDL_WINDOW_SHOWN);
+    if (fenetre == NULL)
+    {
+        fprintf(stderr, "Erreur SDL_CreateWindow : %s\n", SDL_GetError());
+    }
+
+
+    /* Associtation du renderer a la fenêtre créée */
+
+    renderer = SDL_CreateRenderer(fenetre, -1, SDL_RENDERER_ACCELERATED);
+    if (renderer == NULL)
+    {
+        fprintf(stderr, "Erreur SDL_CreateRenderer : %s\n", SDL_GetError());
+    }
+
+
+    /* at_top_horloge est appelee a chaque echeance de intervalle */
+    horloge = SDL_AddTimer(intervalle, at_top_horloge, NULL);
+
+
+    /* BOUCLE DE JEU */
+
+    start_screen(&start_game, &end_game, Text, SZofText, police, white, renderer); /* Affichage de l'écran d'accueil */
+
+    /* Choix et creation de la première piece */
     indice = rand() % 7;
     initialiser(&tetromino, tab_pieces[indice], indice);
+    
+    /* Choix et création de la première preview*/
     indice = rand() % 7;
     initialiser(&preview, tab_pieces[indice], indice);
+
 
     /* Lecture des actions */
     do
@@ -131,7 +158,7 @@ int main(int argc, char *argv[])
         {
             switch (event.type)
             {
-            case SDL_QUIT: /* Appui sur la croix de la fenêtre */
+            case SDL_QUIT: /* Appui sur le bouton fermer de la fenêtre */
                 end_game = 1;
                 break;
             case SDL_USEREVENT: /* Aucune action du Joueur */
@@ -167,13 +194,15 @@ int main(int argc, char *argv[])
             }
         }
 
+
         /* Gestion des actions */
-        if (Pause)
+
+        if (Pause) 
         {
-            menu_pause(&Pause, &end_game, &retour_accueil, Text, SZofText, police, white, renderer);
+            menu_pause(&Pause, &end_game, &retour_accueil, Text, SZofText, police, white, renderer); 
         }
 
-        if(retour_accueil)
+        if(retour_accueil) /* Retour à l'accueil depuis le menu pause */
         {
             start_game = FALSE;
 
@@ -184,7 +213,7 @@ int main(int argc, char *argv[])
             retour_accueil = FALSE;
         }
 
-        if (GoDown)
+        if (GoDown) 
         {
             descente_OK = descendre(plateau_jeu, &tetromino);
             if (!descente_OK)
@@ -265,6 +294,8 @@ int main(int argc, char *argv[])
         {
             hard_drop(plateau_jeu, &tetromino);
 
+            /* On effectue les mêmes verifications que lorsque descente_OK == 0 car la pièce se retrouvera forcément en bas du plateau */
+
             /* Sauvegarde de la pièce dans le plateau */
             for (int i = 0; i < 4; i++)
             {
@@ -288,16 +319,16 @@ int main(int argc, char *argv[])
                     SDL_WaitEvent(&event);
                     switch (event.type)
                     {
-                    case SDL_QUIT:
+                    case SDL_QUIT:      /* Appui sur le bouton fermer de la fenêtre */
                         end_game = TRUE;
                         break;
                     case SDL_KEYDOWN:
                         switch (event.key.keysym.sym)
                         {
-                        case SDLK_ESCAPE:
-                            end_game = FALSE;
+                        case SDLK_ESCAPE:   /* Ouverture du menu pause */
+                            Pause = TRUE;
                             break;
-                        case SDLK_r:
+                        case SDLK_r:    /* Rédémarrage instantané de la partie */
                             NewGame = TRUE;
                             break;
                         default:
@@ -311,6 +342,7 @@ int main(int argc, char *argv[])
             tetromino = preview;
             indice = rand() % 7;
             initialiser(&preview, tab_pieces[indice], indice);
+
             HardDrop = FALSE;
         }
 
