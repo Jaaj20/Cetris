@@ -10,8 +10,8 @@
 #define HAUTEUR 22
 #define LARGEUR 20
 #define VIDE 7                /* n'importe quelle valeur qui n'est pas un indice du tableau des couleurs */
-#define CHANGEMENT_NIVEAU 10  /* indique combien de lignes doivent avoir ete supprimees pour changer de niveau */
-#define DIMINUTION_PERIODE 50 /* décrémentation de la periode d'horloge de 50 ms */
+#define CHANGEMENT_NIVEAU 8  /* indique combien de lignes doivent avoir ete supprimees pour changer de niveau */
+#define DIMINUTION_PERIODE 75 /* décrémentation de la periode d'horloge de 50 ms */
 #define TRUE 1
 #define FALSE 0
 

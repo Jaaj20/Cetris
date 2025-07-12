@@ -28,4 +28,7 @@ void start_screen(int *start_game, int *end_game, char Text[64], int SZofText, T
 /* Affiche un menu pause */
 void menu_pause(int *pause, int *end_game, int *retour_accueil, char Text[64], int SZofText, TTF_Font *police, SDL_Color color, SDL_Renderer *renderer);
 
+/* Affiche un écran de fin */
+void end_screen(int *NewGame, int *end_game, int posX, int posY, char Text[64], int SZofText, TTF_Font *police, SDL_Color color, SDL_Renderer *renderer);
+
 #endif
