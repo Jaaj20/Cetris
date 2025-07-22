@@ -184,13 +184,14 @@ void start_screen(int *start_game, int *end_game, char Text[64], int SZofText, T
         strcpy(Text, "CETRIS");
         afficher_texte(Text, SZofText, police, color, posX, posY, renderer);
 
-        TTF_SizeText(police, "Appuyez sur ESCAPE", &w, &h);
+        TTF_SizeText(police, "Appuyez sur ESPACE", &w, &h);
         posX = (LARGEUR * TAILLE_CASE - w) / 2;
         posY = (HAUTEUR * TAILLE_CASE / 2);
         strcpy(Text, "Appuyez sur ESPACE");
         afficher_texte(Text, SZofText, police, color, posX, posY, renderer);
 
-        strcpy(Text, "ESC pour quitter");
+        TTF_SizeText(police, "Appuyez sur ESPACE", &w, &h);
+        strcpy(Text, "ESC - QUITTER");
         afficher_texte(Text, SZofText, police, color, 0, HAUTEUR * TAILLE_CASE - 25, renderer);
 
         SDL_RenderPresent(renderer);
@@ -249,8 +250,8 @@ void menu_pause(int *pause, int *end_game, int *retour_accueil, char Text[64], i
         posY = (HAUTEUR * TAILLE_CASE / 4);
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255); // Fond noir
         SDL_RenderClear(renderer);
-        
-        TTF_SizeText(police, "> Reprendre", &w, &h);
+
+        TTF_SizeText(police, "Pause", &w, &h);
         strcpy(Text, "Pause");
         afficher_texte(Text, SZofText, police, color, posX, posY, renderer);
 
@@ -322,6 +323,131 @@ void menu_pause(int *pause, int *end_game, int *retour_accueil, char Text[64], i
             posX = (LARGEUR * TAILLE_CASE - w) / 2;
             posY = (HAUTEUR * TAILLE_CASE / 2);
             strcpy(Text, "Ecran d'accueil");
+            afficher_texte(Text, SZofText, police, color, posX, posY, renderer);
+
+            TTF_SizeText(police, "> Quitter", &w, &h);
+            posX = (LARGEUR * TAILLE_CASE - w) / 2;
+            posY = (HAUTEUR * TAILLE_CASE / 2) + 20;
+            strcpy(Text, "> Quitter");
+            afficher_texte(Text, SZofText, police, color, posX, posY, renderer);
+        }
+
+        SDL_RenderPresent(renderer);
+    }
+}
+
+void end_screen(int *NewGame, int *end_game, int *score, int *HighScore, int posX, int posY, char Text[64], int SZofText, TTF_Font *police, SDL_Color color, SDL_Renderer *renderer)
+{
+    int w, h, choix = 0, selection = 0, record = 0;
+    SDL_Event event;
+    FILE *save;
+
+    if (*score > *HighScore)
+    {
+        record = TRUE;
+    }
+
+    while (!(*NewGame) && !(*end_game))
+    {
+        while (SDL_PollEvent(&event))
+        {
+            switch (event.type)
+            {
+            case SDL_QUIT: /* Appui sur le bouton fermer de la fenêtre */
+                *end_game = TRUE;
+                break;
+            case SDL_KEYDOWN:
+                switch (event.key.keysym.sym)
+                {
+                case SDLK_RETURN:
+                    selection = TRUE;
+                    break;
+                case SDLK_ESCAPE:
+                    *end_game = TRUE;
+                    break;
+                case SDLK_DOWN:
+                    if (choix < 1)
+                        choix++;
+                    else
+                        choix = 0;
+                    break;
+                case SDLK_UP:
+                    if (choix > 0)
+                        choix--;
+                    else
+                        choix = 1;
+                    break;
+                default:
+                    break;
+                }
+            default:
+                break;
+            }
+        }
+
+        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255); // Fond noir
+        SDL_RenderClear(renderer);
+
+        if (record == 1)
+        {
+            *HighScore = *score;
+            save = fopen("profile/save.bin", "wb");
+            fwrite(HighScore, sizeof((*HighScore)), 1, save);
+            fclose(save);
+
+            TTF_SizeText(police, "Nouveau Record !", &w, &h);
+            posX = (LARGEUR * TAILLE_CASE - w) / 2;
+            posY = (HAUTEUR * TAILLE_CASE / 2) - 75;
+            strcpy(Text, "Nouveau Record !");
+            afficher_texte(Text, SZofText, police, color, posX, posY, renderer);
+
+            snprintf(Text, SZofText, "%d", *HighScore);
+            TTF_SizeText(police, Text, &w, &h);
+            posX = (LARGEUR * TAILLE_CASE - w) / 2;
+            posY += 30;
+            afficher_nbr(*HighScore, Text, SZofText, police, color, posX, posY, renderer);
+        }
+
+        TTF_SizeText(police, "FIN DE LA PARTIE", &w, &h);
+        posX = (LARGEUR * TAILLE_CASE - w) / 2;
+        posY = (HAUTEUR * TAILLE_CASE / 4);
+        strcpy(Text, "FIN DE LA PARTIE");
+        afficher_texte(Text, SZofText, police, color, posX, posY, renderer);
+
+        if (selection)
+        {
+            if (choix == 0)
+            {
+                record = 0;
+                *NewGame = TRUE;
+            }
+            if (choix == 1)
+            {
+                record = 0;
+                *end_game = TRUE;
+            }
+        }
+
+        if (choix == 0)
+        {
+            TTF_SizeText(police, "> Recommencer", &w, &h);
+            posX = (LARGEUR * TAILLE_CASE - w) / 2;
+            posY = (HAUTEUR * TAILLE_CASE / 2);
+            strcpy(Text, "> Recommencer");
+            afficher_texte(Text, SZofText, police, color, posX, posY, renderer);
+
+            TTF_SizeText(police, "Quitter", &w, &h);
+            posX = (LARGEUR * TAILLE_CASE - w) / 2;
+            posY = (HAUTEUR * TAILLE_CASE / 2) + 20;
+            strcpy(Text, "Quitter");
+            afficher_texte(Text, SZofText, police, color, posX, posY, renderer);
+        }
+        if (choix == 1)
+        {
+            TTF_SizeText(police, "Recommencer", &w, &h);
+            posX = (LARGEUR * TAILLE_CASE - w) / 2;
+            posY = (HAUTEUR * TAILLE_CASE / 2);
+            strcpy(Text, "Recommencer");
             afficher_texte(Text, SZofText, police, color, posX, posY, renderer);
 
             TTF_SizeText(police, "> Quitter", &w, &h);

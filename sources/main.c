@@ -45,7 +45,7 @@ int main(int argc, char *argv[])
     int end_game = FALSE;   /* passe a TRUE si l'utilsateur utilise la touche ESCAPE permet un arret premature de la partie  */
     int Pause = FALSE;
     int retour_accueil = FALSE;
-    int cpt = 0, niveau = 0, score = 0;
+    int cpt = 0, niveau = 1, score = 0, HighScore = 0;
     SDL_TimerID horloge;     /* l'identifiant de l'horloge qui cadence la chute des pieces */
     Uint32 intervalle = 500; /* la periode de l'horloge (en ms) */
 
@@ -58,12 +58,16 @@ int main(int argc, char *argv[])
 
     char Text[64];                          /* Tableau contenant le texte*/
     int SZofText = sizeof(Text);            /* Taille de la chaîne de caractères */
-    float posX, posY;                       /* Coordonnées du texte affiché  */
+    int posX, posY;                         /* Coordonnées du texte affiché  */
     SDL_Color white = {255, 255, 255, 255}; /* Couleur du texte */
 
     struct plateau plateau_jeu[HAUTEUR][LARGEUR / 2];
     struct piece tetromino;
     struct piece preview;
+
+    /* Gestion des fichiers */
+
+    FILE *save;
 
     /* INITIALISATIONS */
 
@@ -78,6 +82,16 @@ int main(int argc, char *argv[])
         {{0, 1}, {1, 0}, {1, 1}, {2, 1}}, // T
     };
 
+    struct color color_tab[] = {/* Tableau contenant les couleurs des pièces */
+                                {"yellow", 255, 233, 38},
+                                {"cyan", 0, 255, 255},
+                                {"orange", 255, 140, 0},
+                                {"blue", 0, 0, 255},
+                                {"red", 255, 0, 0},
+                                {"lime green", 50, 205, 50},
+                                {"fuchsia", 255, 0, 255},
+                                {"black", 0, 0, 0},
+                                {"dark grey", 50, 50, 50}};
     struct color color_tab[] = {/* Tableau contenant les couleurs des pièces */
                                 {"yellow", 255, 233, 38},
                                 {"cyan", 0, 255, 255},
@@ -131,6 +145,20 @@ int main(int argc, char *argv[])
     /* BOUCLE DE JEU */
 
     start_screen(&start_game, &end_game, Text, SZofText, police, white, renderer); /* Affichage de l'écran d'accueil */
+
+    save = fopen("profile/save.bin", "rb");
+    if (save == NULL)
+    {
+        HighScore = 0;
+        save = fopen("profile/save.bin", "wb");
+        fwrite(&HighScore, sizeof(score), 1, save);
+    }
+    else
+    {
+        fread(&HighScore, sizeof(HighScore), 1, save);
+        printf("%d", HighScore);
+    }
+    fclose(save);
 
     /* Choix et creation de la première piece */
     indice = rand() % 7;
@@ -223,28 +251,7 @@ int main(int argc, char *argv[])
                 /* on verifie si la partie est perdue */
                 if (partie_perdue(plateau_jeu) != 0)
                 {
-                    while (!NewGame && !end_game)
-                    {
-                        SDL_WaitEvent(&event);
-                        switch (event.type)
-                        {
-                        case SDL_QUIT: /* Appui sur le bouton fermer de la fenêtre */
-                            end_game = TRUE;
-                            break;
-                        case SDL_KEYDOWN:
-                            switch (event.key.keysym.sym)
-                            {
-                            case SDLK_ESCAPE: /* Ouverture du menu pause */
-                                end_game = TRUE;
-                                break;
-                            case SDLK_r: /* Rédémarrage instantané de la partie */
-                                NewGame = TRUE;
-                                break;
-                            default:
-                                break;
-                            }
-                        }
-                    }
+                    end_screen(&NewGame, &end_game, &score, &HighScore, posX, posY, Text, SZofText, police, white, renderer);
                 }
 
                 /* on genère une nouvelle pièce */
@@ -299,31 +306,9 @@ int main(int argc, char *argv[])
             cpt += supprimer_lignes(plateau_jeu, &score);
 
             /* on verifie si la partie est perdue */
-            if (partie_perdue(plateau_jeu) != 0)
+            if (partie_perdue(plateau_jeu))
             {
-
-                while (!NewGame && !end_game)
-                {
-                    SDL_WaitEvent(&event);
-                    switch (event.type)
-                    {
-                    case SDL_QUIT: /* Appui sur le bouton fermer de la fenêtre */
-                        end_game = TRUE;
-                        break;
-                    case SDL_KEYDOWN:
-                        switch (event.key.keysym.sym)
-                        {
-                        case SDLK_ESCAPE: /* Ouverture du menu pause */
-                           end_game = TRUE;
-                            break;
-                        case SDLK_r: /* Rédémarrage instantané de la partie */
-                            NewGame = TRUE;
-                            break;
-                        default:
-                            break;
-                        }
-                    }
-                }
+                end_screen(&NewGame, &end_game, &score, &HighScore, posX, posY, Text, SZofText, police, white, renderer);
             }
 
             /* on genère une nouvelle pièce */
@@ -347,7 +332,7 @@ int main(int argc, char *argv[])
             initialiser(&tetromino, tab_pieces[indice], indice);
             indice = rand() % 7;
             initialiser(&preview, tab_pieces[indice], indice);
-            cpt = 0, niveau = 0, score = 0;
+            cpt = 0, niveau = 0, score = 0, intervalle = 500;
 
             NewGame = FALSE;
         }
@@ -370,15 +355,22 @@ int main(int argc, char *argv[])
             SDL_RenderClear(renderer);
             afficher_plateau(color_tab, plateau_jeu, renderer);
 
+            strcpy(Text, "High Score:");
+            posX = 2.3 * (LARGEUR * TAILLE_CASE) / 4, posY = (HAUTEUR * TAILLE_CASE) / 2 - 50;
+            afficher_texte(Text, SZofText, police, white, posX, posY, renderer);
+
+            posY += 25;
+            afficher_nbr(HighScore, Text, SZofText, police, white, posX, posY, renderer);
+
             strcpy(Text, "Score:");
-            posX = 2.6 * (LARGEUR * TAILLE_CASE) / 4, posY = (HAUTEUR * TAILLE_CASE) / 2;
+            posY += 30;
             afficher_texte(Text, SZofText, police, white, posX, posY, renderer);
 
             posY += 25;
             afficher_nbr(score, Text, SZofText, police, white, posX, posY, renderer);
 
             strcpy(Text, "Niveau:");
-            posY += 25;
+            posY += 30;
             afficher_texte(Text, SZofText, police, white, posX, posY, renderer);
 
             posY += 25;
