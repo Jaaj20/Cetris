@@ -336,10 +336,16 @@ void menu_pause(int *pause, int *end_game, int *retour_accueil, char Text[64], i
     }
 }
 
-void end_screen(int *NewGame, int *end_game, int posX, int posY, char Text[64], int SZofText, TTF_Font *police, SDL_Color color, SDL_Renderer *renderer)
+void end_screen(int *NewGame, int *end_game, int *score, int *HighScore, int posX, int posY, char Text[64], int SZofText, TTF_Font *police, SDL_Color color, SDL_Renderer *renderer)
 {
-    int w, h, choix = 0, selection = 0;
+    int w, h, choix = 0, selection = 0, record = 0;
     SDL_Event event;
+    FILE *save;
+
+    if (*score > *HighScore)
+    {
+        record = TRUE;
+    }
 
     while (!(*NewGame) && !(*end_game))
     {
@@ -382,9 +388,29 @@ void end_screen(int *NewGame, int *end_game, int posX, int posY, char Text[64], 
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255); // Fond noir
         SDL_RenderClear(renderer);
 
+        if (record == 1)
+        {
+            *HighScore = *score;
+            save = fopen("profile/save.bin", "wb");
+            fwrite(HighScore, sizeof((*HighScore)), 1, save);
+            fclose(save);
+
+            TTF_SizeText(police, "Nouveau Record !", &w, &h);
+            posX = (LARGEUR * TAILLE_CASE - w) / 2;
+            posY = (HAUTEUR * TAILLE_CASE / 2) - 75;
+            strcpy(Text, "Nouveau Record !");
+            afficher_texte(Text, SZofText, police, color, posX, posY, renderer);
+
+            snprintf(Text, SZofText, "%d", *HighScore);
+            TTF_SizeText(police, Text, &w, &h);
+            posX = (LARGEUR * TAILLE_CASE - w) / 2;
+            posY += 30;
+            afficher_nbr(*HighScore, Text, SZofText, police, color, posX, posY, renderer);
+        }
+
         TTF_SizeText(police, "FIN DE LA PARTIE", &w, &h);
         posX = (LARGEUR * TAILLE_CASE - w) / 2;
-        posY = (HAUTEUR * TAILLE_CASE / 2) - 50;
+        posY = (HAUTEUR * TAILLE_CASE / 4);
         strcpy(Text, "FIN DE LA PARTIE");
         afficher_texte(Text, SZofText, police, color, posX, posY, renderer);
 
@@ -392,10 +418,12 @@ void end_screen(int *NewGame, int *end_game, int posX, int posY, char Text[64], 
         {
             if (choix == 0)
             {
+                record = 0;
                 *NewGame = TRUE;
             }
             if (choix == 1)
             {
+                record = 0;
                 *end_game = TRUE;
             }
         }
