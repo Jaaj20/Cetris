@@ -52,7 +52,7 @@ int main(int argc, char *argv[])
     /* Besoins de SDL */
 
     SDL_Event event;               /* l'evenement a traiter */
-    SDL_Renderer *renderer = NULL; /* gere le rendu graphique de la fênetre */
+    SDL_Renderer *renderer; /* gere le rendu graphique de la fênetre */
 
     /* Allocation de l'espace du texte et ses paramètres */
 
@@ -92,16 +92,6 @@ int main(int argc, char *argv[])
                                 {"fuchsia", 255, 0, 255},
                                 {"black", 0, 0, 0},
                                 {"dark grey", 50, 50, 50}};
-    struct color color_tab[] = {/* Tableau contenant les couleurs des pièces */
-                                {"yellow", 255, 233, 38},
-                                {"cyan", 0, 255, 255},
-                                {"orange", 255, 140, 0},
-                                {"blue", 0, 0, 255},
-                                {"red", 255, 0, 0},
-                                {"lime green", 50, 205, 50},
-                                {"fuchsia", 255, 0, 255},
-                                {"black", 0, 0, 0},
-                                {"dark grey", 50, 50, 50}};
 
     /* Initialisation du plateau de jeu vide */
 
@@ -119,6 +109,7 @@ int main(int argc, char *argv[])
     if (police == NULL)
     {
         fprintf(stderr, "ERREUR FATALE : Impossible de charger la police. TTF_OpenFont: %s\n", TTF_GetError());
+        exit(1);
     }
 
     /* OUVERTURE DE LA FENETRE GRAPHIQUE */
@@ -129,6 +120,7 @@ int main(int argc, char *argv[])
     if (fenetre == NULL)
     {
         fprintf(stderr, "Erreur SDL_CreateWindow : %s\n", SDL_GetError());
+        exit(1);
     }
 
     /* Associtation du renderer a la fenêtre créée */
@@ -137,6 +129,7 @@ int main(int argc, char *argv[])
     if (renderer == NULL)
     {
         fprintf(stderr, "Erreur SDL_CreateRenderer : %s\n", SDL_GetError());
+        exit(1);
     }
 
     /* at_top_horloge est appelee a chaque echeance de intervalle */
@@ -144,7 +137,7 @@ int main(int argc, char *argv[])
 
     /* BOUCLE DE JEU */
 
-    start_screen(&start_game, &end_game, Text, SZofText, police, white, renderer); /* Affichage de l'écran d'accueil */
+    start_screen(&start_game, &end_game, Text, police, white, renderer); /* Affichage de l'écran d'accueil */
 
     save = fopen("profile/save.bin", "rb");
     if (save == NULL)
@@ -222,7 +215,7 @@ int main(int argc, char *argv[])
         {
             start_game = FALSE;
 
-            start_screen(&start_game, &end_game, Text, SZofText, police, white, renderer);
+            start_screen(&start_game, &end_game, Text, police, white, renderer);
 
             Pause = FALSE;
             NewGame = TRUE;
@@ -357,21 +350,21 @@ int main(int argc, char *argv[])
 
             strcpy(Text, "High Score:");
             posX = 2.3 * (LARGEUR * TAILLE_CASE) / 4, posY = (HAUTEUR * TAILLE_CASE) / 2 - 50;
-            afficher_texte(Text, SZofText, police, white, posX, posY, renderer);
+            afficher_texte(Text, police, white, posX, posY, renderer);
 
             posY += 25;
             afficher_nbr(HighScore, Text, SZofText, police, white, posX, posY, renderer);
 
             strcpy(Text, "Score:");
             posY += 30;
-            afficher_texte(Text, SZofText, police, white, posX, posY, renderer);
+            afficher_texte(Text, police, white, posX, posY, renderer);
 
             posY += 25;
             afficher_nbr(score, Text, SZofText, police, white, posX, posY, renderer);
 
             strcpy(Text, "Niveau:");
             posY += 30;
-            afficher_texte(Text, SZofText, police, white, posX, posY, renderer);
+            afficher_texte(Text, police, white, posX, posY, renderer);
 
             posY += 25;
             afficher_nbr(niveau, Text, SZofText, police, white, posX, posY, renderer);

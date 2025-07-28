@@ -3,6 +3,7 @@
 
 #include <time.h>
 #include <stdio.h>
+#include <string.h>
 #include "../SDL2/include/SDL2/SDL.h"
 #include "../SDL2ttf/include/SDL2/SDL_ttf.h"
 
