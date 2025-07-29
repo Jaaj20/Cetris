@@ -208,7 +208,7 @@ int main(int argc, char *argv[])
 
         if (Pause)
         {
-            menu_pause(&Pause, &end_game, &retour_accueil, Text, SZofText, police, white, renderer);
+            menu_pause(&Pause, &end_game, &retour_accueil, Text, police, white, renderer);
         }
 
         if (retour_accueil) /* Retour à l'accueil depuis le menu pause */
