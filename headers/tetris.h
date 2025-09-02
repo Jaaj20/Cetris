@@ -6,8 +6,11 @@
 #include <string.h>
 #include "../SDL2/include/SDL2/SDL.h"
 #include "../SDL2ttf/include/SDL2/SDL_ttf.h"
+#include "../SDL2image/include/SDL2/SDL_image.h"
 
-#define TAILLE_CASE 20
+#define TAILLE_CASE 23
+#define H_FENETRE 540
+#define L_FENETRE 960
 #define HAUTEUR 22
 #define LARGEUR 20
 #define VIDE 7                /* n'importe quelle valeur qui n'est pas un indice du tableau des couleurs */

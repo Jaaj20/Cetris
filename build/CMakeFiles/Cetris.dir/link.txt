@@ -1,0 +1,3 @@
+"C:\Program Files\CMake\bin\cmake.exe" -E rm -f CMakeFiles\Cetris.dir/objects.a
+C:\msys64\mingw64\bin\ar.exe qc CMakeFiles\Cetris.dir/objects.a @CMakeFiles\Cetris.dir\objects1.rsp
+C:\msys64\mingw64\bin\gcc.exe -O3 -DNDEBUG -Wl,--whole-archive CMakeFiles\Cetris.dir/objects.a -Wl,--no-whole-archive -o "C:\Users\joaom\Desktop\Tetris C - Projet plusieurs fichiers\Cetris.exe" -Wl,--out-implib,libCetris.dll.a -Wl,--major-image-version,0,--minor-image-version,0 @CMakeFiles\Cetris.dir\linkLibs.rsp

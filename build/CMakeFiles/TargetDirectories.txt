@@ -1,0 +1,3 @@
+C:/Users/joaom/Desktop/Tetris C - Projet plusieurs fichiers/build/CMakeFiles/Cetris.dir
+C:/Users/joaom/Desktop/Tetris C - Projet plusieurs fichiers/build/CMakeFiles/edit_cache.dir
+C:/Users/joaom/Desktop/Tetris C - Projet plusieurs fichiers/build/CMakeFiles/rebuild_cache.dir

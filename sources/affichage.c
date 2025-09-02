@@ -40,45 +40,45 @@ void afficher_plateau(struct color color_tab[], struct plateau plateau_jeu[HAUTE
     int lig;
     SDL_Rect rect;
 
-    for (lig = 0; lig < HAUTEUR; lig++)
+    for (lig = 17; lig < HAUTEUR; lig++)
     {
         /* Plateau de Jeu */
-        for (col = 0; col < LARGEUR / 2; col++)
+        for (col = (L_FENETRE/2 - 5*TAILLE_CASE); col < LARGEUR / 2; col++)
         {
             rect = (SDL_Rect){col * TAILLE_CASE, lig * TAILLE_CASE, TAILLE_CASE, TAILLE_CASE};
             SDL_SetRenderDrawColor(renderer, color_tab[plateau_jeu[lig][col].carre].r, color_tab[plateau_jeu[lig][col].carre].g, color_tab[plateau_jeu[lig][col].carre].b, 255);
             SDL_RenderFillRect(renderer, &rect);
         }
 
-        /* Ligne de séparation entre plateau de jeu et l'affiche de la preview/score */
-        rect = (SDL_Rect){(LARGEUR / 2) * TAILLE_CASE, lig * TAILLE_CASE, TAILLE_CASE / 2, TAILLE_CASE};
-        SDL_SetRenderDrawColor(renderer, color_tab[8].r, color_tab[8].g, color_tab[8].b, 255);
-        SDL_RenderFillRect(renderer, &rect);
+        // /* Ligne de séparation entre plateau de jeu et l'affiche de la preview/score */
+        // rect = (SDL_Rect){(LARGEUR / 2) * TAILLE_CASE, lig * TAILLE_CASE, TAILLE_CASE / 2, TAILLE_CASE};
+        // SDL_SetRenderDrawColor(renderer, color_tab[8].r, color_tab[8].g, color_tab[8].b, 255);
+        // SDL_RenderFillRect(renderer, &rect);
 
-        /* Encadré de la preview */
-        if (lig == 1)
-        {
-            rect = (SDL_Rect){265, lig * TAILLE_CASE, 90, TAILLE_CASE / 4};
-            SDL_RenderFillRect(renderer, &rect);
+        // /* Encadré de la preview */
+        // if (lig == 1)
+        // {
+        //     rect = (SDL_Rect){265, lig * TAILLE_CASE, 90, TAILLE_CASE / 4};
+        //     SDL_RenderFillRect(renderer, &rect);
 
-            rect = (SDL_Rect){265, lig * TAILLE_CASE, TAILLE_CASE / 4, TAILLE_CASE};
-            SDL_RenderFillRect(renderer, &rect);
-            rect = (SDL_Rect){350, lig * TAILLE_CASE, TAILLE_CASE / 4, TAILLE_CASE};
-            SDL_RenderFillRect(renderer, &rect);
-        }
-        if (lig > 1 && lig < 6)
-        {
-            rect = (SDL_Rect){265, lig * TAILLE_CASE, TAILLE_CASE / 4, TAILLE_CASE};
-            SDL_RenderFillRect(renderer, &rect);
+        //     rect = (SDL_Rect){265, lig * TAILLE_CASE, TAILLE_CASE / 4, TAILLE_CASE};
+        //     SDL_RenderFillRect(renderer, &rect);
+        //     rect = (SDL_Rect){350, lig * TAILLE_CASE, TAILLE_CASE / 4, TAILLE_CASE};
+        //     SDL_RenderFillRect(renderer, &rect);
+        // }
+        // if (lig > 1 && lig < 6)
+        // {
+        //     rect = (SDL_Rect){265, lig * TAILLE_CASE, TAILLE_CASE / 4, TAILLE_CASE};
+        //     SDL_RenderFillRect(renderer, &rect);
 
-            rect = (SDL_Rect){350, lig * TAILLE_CASE, TAILLE_CASE / 4, TAILLE_CASE};
-            SDL_RenderFillRect(renderer, &rect);
-        }
-        if (lig == 6)
-        {
-            rect = (SDL_Rect){265, lig * TAILLE_CASE, 90, TAILLE_CASE / 4};
-            SDL_RenderFillRect(renderer, &rect);
-        }
+        //     rect = (SDL_Rect){350, lig * TAILLE_CASE, TAILLE_CASE / 4, TAILLE_CASE};
+        //     SDL_RenderFillRect(renderer, &rect);
+        // }
+        // if (lig == 6)
+        // {
+        //     rect = (SDL_Rect){265, lig * TAILLE_CASE, 90, TAILLE_CASE / 4};
+        //     SDL_RenderFillRect(renderer, &rect);
+        // }
     }
 }
 
@@ -144,9 +144,13 @@ void afficher_nbr(int nbr, char Text[64], int SZofText, TTF_Font *police, SDL_Co
     }
 }
 
-void start_screen(int *start_game, int *end_game, char Text[64], TTF_Font *police, SDL_Color color, SDL_Renderer *renderer)
+void start_screen(int *start_game, int *end_game, char Text[64], TTF_Font *police, SDL_Color color, SDL_Surface *logo, SDL_Renderer *renderer)
 {
     int posX, posY, w, h;
+    SDL_Texture *sprite = SDL_CreateTextureFromSurface(renderer, logo);
+    SDL_Rect support;
+    SDL_Color grey = {255, 255, 255, 150};
+
     while (!(*end_game) && !(*start_game))
     {
         SDL_Event event;
@@ -177,24 +181,28 @@ void start_screen(int *start_game, int *end_game, char Text[64], TTF_Font *polic
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255); // Fond noir
         SDL_RenderClear(renderer);
 
-        TTF_SizeText(police, "CETRIS", &w, &h);
-        posX = (LARGEUR * TAILLE_CASE - w) / 2;
-        posY = (HAUTEUR * TAILLE_CASE / 2) - 50;
-        strcpy(Text, "CETRIS");
-        afficher_texte(Text, police, color, posX, posY, renderer);
+        w = 608; h = 342;
+        posX = (L_FENETRE)/2 - (w/2);
+        posY = 20;
+        support.x = posX;
+        support.y = posY;
+        support.w = w; 
+        support.h = h;
+
+        SDL_RenderCopy(renderer, sprite, NULL, &support);
 
         TTF_SizeText(police, "Appuyez sur ESPACE", &w, &h);
-        posX = (LARGEUR * TAILLE_CASE - w) / 2;
-        posY = (HAUTEUR * TAILLE_CASE / 2);
+        posX = (L_FENETRE - w) / 2;
+        posY += (3 * H_FENETRE / 4) - 27; 
         strcpy(Text, "Appuyez sur ESPACE");
         afficher_texte(Text, police, color, posX, posY, renderer);
 
-        TTF_SizeText(police, "Appuyez sur ESPACE", &w, &h);
         strcpy(Text, "ESC - QUITTER");
-        afficher_texte(Text, police, color, 0, HAUTEUR * TAILLE_CASE - 25, renderer);
+        afficher_texte(Text, police, grey, 0, H_FENETRE - 24, renderer);
 
         SDL_RenderPresent(renderer);
     }
+    SDL_DestroyTexture(sprite);
 }
 
 void afficher_viseur(struct piece *p_tetromino, struct color color_tab[], struct plateau plateau_jeu[HAUTEUR][LARGEUR / 2], SDL_Renderer *renderer)

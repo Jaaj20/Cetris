@@ -10,7 +10,7 @@ int main(int argc, char *argv[])
 
     srand(time(NULL));
 
-    /* Initialisation de SDL et SDL_ttf */
+    /* Initialisation des bibliothèques utilisées */
 
     if (SDL_Init(SDL_INIT_EVERYTHING) != 0)
     {
@@ -20,7 +20,14 @@ int main(int argc, char *argv[])
 
     if (TTF_Init() == -1)
     {
-        printf("TTF_Init: %s\n", TTF_GetError());
+        printf("Erreur TTF_Init: %s\n", TTF_GetError());
+        exit(1);
+    }
+
+    int flag = IMG_INIT_PNG;
+    if ((IMG_Init(IMG_INIT_PNG) & flag) != flag)
+    {
+        printf("Erreur IMG_Init: %s\n", IMG_GetError());
         exit(1);
     }
 
@@ -60,6 +67,8 @@ int main(int argc, char *argv[])
     int SZofText = sizeof(Text);            /* Taille de la chaîne de caractères */
     int posX, posY;                         /* Coordonnées du texte affiché  */
     SDL_Color white = {255, 255, 255, 255}; /* Couleur du texte */
+
+    SDL_Surface *logo;
 
     struct plateau plateau_jeu[HAUTEUR][LARGEUR / 2];
     struct piece tetromino;
@@ -105,10 +114,17 @@ int main(int argc, char *argv[])
 
     /* Initialisation de la police */
 
-    TTF_Font *police = TTF_OpenFont("SDL2ttf/Minecraft.ttf", 24);
+    TTF_Font *police = TTF_OpenFont("SDL2ttf/upheavtt.ttf", 27);
     if (police == NULL)
     {
         fprintf(stderr, "ERREUR FATALE : Impossible de charger la police. TTF_OpenFont: %s\n", TTF_GetError());
+        exit(1);
+    }
+
+    logo = IMG_Load("textures/logo_cetris.png");
+    if (logo == NULL)
+    {
+        printf("Erreur image non chargée: %s\n", IMG_GetError());
         exit(1);
     }
 
@@ -116,7 +132,7 @@ int main(int argc, char *argv[])
 
     /*Creation de la fenetre */
 
-    SDL_Window *fenetre = SDL_CreateWindow("CETRIS", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, LARGEUR * TAILLE_CASE, HAUTEUR * TAILLE_CASE, SDL_WINDOW_SHOWN);
+    SDL_Window *fenetre = SDL_CreateWindow("CETRIS", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, L_FENETRE, H_FENETRE, SDL_WINDOW_SHOWN);
     if (fenetre == NULL)
     {
         fprintf(stderr, "Erreur SDL_CreateWindow : %s\n", SDL_GetError());
@@ -137,7 +153,7 @@ int main(int argc, char *argv[])
 
     /* BOUCLE DE JEU */
 
-    start_screen(&start_game, &end_game, Text, police, white, renderer); /* Affichage de l'écran d'accueil */
+    start_screen(&start_game, &end_game, Text, police, white, logo, renderer); /* Affichage de l'écran d'accueil */
 
     save = fopen("profile/save.bin", "rb");
     if (save == NULL)
@@ -215,7 +231,7 @@ int main(int argc, char *argv[])
         {
             start_game = FALSE;
 
-            start_screen(&start_game, &end_game, Text, police, white, renderer);
+            start_screen(&start_game, &end_game, Text, police, white, logo, renderer);
 
             Pause = FALSE;
             NewGame = TRUE;
@@ -380,8 +396,11 @@ int main(int argc, char *argv[])
     } while (!end_game);
 
     TTF_CloseFont(police);
+    SDL_FreeSurface(logo);
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(fenetre);
+
+    IMG_Quit();
     TTF_Quit();
     SDL_Quit();
     return 0;

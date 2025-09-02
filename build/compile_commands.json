@@ -1,0 +1,26 @@
+[
+{
+  "directory": "C:/Users/joaom/Desktop/Tetris C - Projet plusieurs fichiers/build",
+  "command": "C:\\msys64\\mingw64\\bin\\gcc.exe  @CMakeFiles/Cetris.dir/includes_C.rsp -O3 -DNDEBUG -o CMakeFiles\\Cetris.dir\\sources\\main.c.obj -c \"C:\\Users\\joaom\\Desktop\\Tetris C - Projet plusieurs fichiers\\sources\\main.c\"",
+  "file": "C:/Users/joaom/Desktop/Tetris C - Projet plusieurs fichiers/sources/main.c",
+  "output": "CMakeFiles/Cetris.dir/sources/main.c.obj"
+},
+{
+  "directory": "C:/Users/joaom/Desktop/Tetris C - Projet plusieurs fichiers/build",
+  "command": "C:\\msys64\\mingw64\\bin\\gcc.exe  @CMakeFiles/Cetris.dir/includes_C.rsp -O3 -DNDEBUG -o CMakeFiles\\Cetris.dir\\sources\\evenements.c.obj -c \"C:\\Users\\joaom\\Desktop\\Tetris C - Projet plusieurs fichiers\\sources\\evenements.c\"",
+  "file": "C:/Users/joaom/Desktop/Tetris C - Projet plusieurs fichiers/sources/evenements.c",
+  "output": "CMakeFiles/Cetris.dir/sources/evenements.c.obj"
+},
+{
+  "directory": "C:/Users/joaom/Desktop/Tetris C - Projet plusieurs fichiers/build",
+  "command": "C:\\msys64\\mingw64\\bin\\gcc.exe  @CMakeFiles/Cetris.dir/includes_C.rsp -O3 -DNDEBUG -o CMakeFiles\\Cetris.dir\\sources\\deplacements.c.obj -c \"C:\\Users\\joaom\\Desktop\\Tetris C - Projet plusieurs fichiers\\sources\\deplacements.c\"",
+  "file": "C:/Users/joaom/Desktop/Tetris C - Projet plusieurs fichiers/sources/deplacements.c",
+  "output": "CMakeFiles/Cetris.dir/sources/deplacements.c.obj"
+},
+{
+  "directory": "C:/Users/joaom/Desktop/Tetris C - Projet plusieurs fichiers/build",
+  "command": "C:\\msys64\\mingw64\\bin\\gcc.exe  @CMakeFiles/Cetris.dir/includes_C.rsp -O3 -DNDEBUG -o CMakeFiles\\Cetris.dir\\sources\\affichage.c.obj -c \"C:\\Users\\joaom\\Desktop\\Tetris C - Projet plusieurs fichiers\\sources\\affichage.c\"",
+  "file": "C:/Users/joaom/Desktop/Tetris C - Projet plusieurs fichiers/sources/affichage.c",
+  "output": "CMakeFiles/Cetris.dir/sources/affichage.c.obj"
+}
+]

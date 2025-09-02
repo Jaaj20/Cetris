@@ -23,7 +23,7 @@ void afficher_texte(char Text[64], TTF_Font *police, SDL_Color color, float posX
 void afficher_nbr(int nbr, char Text[64], int SZofText, TTF_Font *police, SDL_Color color, float posX, float posY, SDL_Renderer *renderer);
 
 /* Affiche un écran d'accueil */
-void start_screen(int *start_game, int *end_game, char Text[64], TTF_Font *police, SDL_Color color, SDL_Renderer *renderer);
+void start_screen(int *start_game, int *end_game, char Text[64], TTF_Font *police, SDL_Color color, SDL_Surface *logo, SDL_Renderer *renderer);
 
 /* Affiche un menu pause */
 void menu_pause(int *pause, int *end_game, int *retour_accueil, char Text[64], TTF_Font *police, SDL_Color color, SDL_Renderer *renderer);

@@ -1,0 +1,2 @@
+Plateau de jeu: 506x460
+Coos du plateau: x= (L_FENETRE/2 - 10*TAILLE_CASE) , y= 17 
