@@ -17,7 +17,7 @@ void afficher_preview(struct piece tetromino, struct color color_tab, SDL_Render
 void afficher_plateau(struct color color_tab[], struct plateau plateau_jeu[HAUTEUR][LARGEUR / 2], SDL_Renderer *renderer);
 
 /* Affiche un texte dans la fenêtre */
-void afficher_texte(char Text[64], TTF_Font *police, SDL_Color color, float posX, float posY, SDL_Renderer *renderer);
+void afficher_texte(char Text[64], TTF_Font *police, SDL_Color color, float posX, float posY, SDL_Renderer *renderer, int centered);
 
 /* Afficher un nombre dans la fenêtre */
 void afficher_nbr(int nbr, char Text[64], int SZofText, TTF_Font *police, SDL_Color color, float posX, float posY, SDL_Renderer *renderer);

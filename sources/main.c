@@ -366,21 +366,21 @@ int main(int argc, char *argv[])
 
             strcpy(Text, "High Score:");
             posX = 2.3 * (LARGEUR * TAILLE_CASE) / 4, posY = (HAUTEUR * TAILLE_CASE) / 2 - 50;
-            afficher_texte(Text, police, white, posX, posY, renderer);
+            afficher_texte(Text, police, white, posX, posY, renderer, 1);
 
             posY += 25;
             afficher_nbr(HighScore, Text, SZofText, police, white, posX, posY, renderer);
 
             strcpy(Text, "Score:");
             posY += 30;
-            afficher_texte(Text, police, white, posX, posY, renderer);
+            afficher_texte(Text, police, white, posX, posY, renderer, 1);
 
             posY += 25;
             afficher_nbr(score, Text, SZofText, police, white, posX, posY, renderer);
 
             strcpy(Text, "Niveau:");
             posY += 30;
-            afficher_texte(Text, police, white, posX, posY, renderer);
+            afficher_texte(Text, police, white, posX, posY, renderer, 1);
 
             posY += 25;
             afficher_nbr(niveau, Text, SZofText, police, white, posX, posY, renderer);

@@ -1,6 +1,17 @@
 #include "../headers/tetris.h"
 #include "../headers/deplacements.h"
 
+// Move the UI
+void moveRect(SDL_Rect *rect) {
+  // Verif entry
+  if (rect == NULL)
+    return;
+
+  int windowWidth = 608;;
+  int offsetX = 0;;
+  rect->x += windowWidth /2 - offsetX;
+}
+
 /* Affiche une piece */
 void afficher_piece(struct piece tetromino, struct color color_tab, SDL_Renderer *renderer)
 {
@@ -9,9 +20,15 @@ void afficher_piece(struct piece tetromino, struct color color_tab, SDL_Renderer
 
     for (i = 0; i < 4; i++)
     {
+        // Relative Pos
         ligne_deb = (tetromino.pos_ligne + tetromino.la_piece[i].ligne) * TAILLE_CASE;
         colonne_deb = (tetromino.pos_colonne + tetromino.la_piece[i].colonne) * TAILLE_CASE;
         SDL_Rect rect = {colonne_deb, ligne_deb, TAILLE_CASE, TAILLE_CASE};
+        
+        // Tetris Offset
+        moveRect(&rect);
+
+        // Render
         SDL_SetRenderDrawColor(renderer, color_tab.r, color_tab.g, color_tab.b, 255);
         SDL_RenderFillRect(renderer, &rect);
     }
@@ -26,63 +43,85 @@ void afficher_preview(struct piece tetromino, struct color color_tab, SDL_Render
 
     for (i = 0; i < 4; i++)
     {
+        // Relative Pos
         ligne_deb = (tetromino.pos_ligne + tetromino.la_piece[i].ligne) * TAILLE_CASE;
         colonne_deb = 10 + (tetromino.pos_colonne + tetromino.la_piece[i].colonne) * TAILLE_CASE;
         SDL_Rect rect = {colonne_deb, ligne_deb, TAILLE_CASE, TAILLE_CASE};
+
+        // Tetris Offset
+        moveRect(&rect);
+
+        // Render
         SDL_SetRenderDrawColor(renderer, color_tab.r, color_tab.g, color_tab.b, 255);
         SDL_RenderFillRect(renderer, &rect);
-    }
+  }
 }
 
 void afficher_plateau(struct color color_tab[], struct plateau plateau_jeu[HAUTEUR][LARGEUR / 2], SDL_Renderer *renderer)
 {
-    int col;
-    int lig;
-    SDL_Rect rect;
+  int col;
+  int lig;
+  SDL_Rect rect;
 
-    for (lig = 17; lig < HAUTEUR; lig++)
+  for (lig = 0; lig < HAUTEUR; lig++)
+  {
+    /* Plateau de Jeu */
+    for (col = 0; col < LARGEUR / 2; col++)
     {
-        /* Plateau de Jeu */
-        for (col = (L_FENETRE/2 - 5*TAILLE_CASE); col < LARGEUR / 2; col++)
-        {
-            rect = (SDL_Rect){col * TAILLE_CASE, lig * TAILLE_CASE, TAILLE_CASE, TAILLE_CASE};
-            SDL_SetRenderDrawColor(renderer, color_tab[plateau_jeu[lig][col].carre].r, color_tab[plateau_jeu[lig][col].carre].g, color_tab[plateau_jeu[lig][col].carre].b, 255);
-            SDL_RenderFillRect(renderer, &rect);
-        }
+      // Relative Pos
+      rect = (SDL_Rect){col * TAILLE_CASE, lig * TAILLE_CASE, TAILLE_CASE, TAILLE_CASE};
 
-        // /* Ligne de séparation entre plateau de jeu et l'affiche de la preview/score */
-        // rect = (SDL_Rect){(LARGEUR / 2) * TAILLE_CASE, lig * TAILLE_CASE, TAILLE_CASE / 2, TAILLE_CASE};
-        // SDL_SetRenderDrawColor(renderer, color_tab[8].r, color_tab[8].g, color_tab[8].b, 255);
-        // SDL_RenderFillRect(renderer, &rect);
+      // Tetris Offset
+      moveRect(&rect);
 
-        // /* Encadré de la preview */
-        // if (lig == 1)
-        // {
-        //     rect = (SDL_Rect){265, lig * TAILLE_CASE, 90, TAILLE_CASE / 4};
-        //     SDL_RenderFillRect(renderer, &rect);
-
-        //     rect = (SDL_Rect){265, lig * TAILLE_CASE, TAILLE_CASE / 4, TAILLE_CASE};
-        //     SDL_RenderFillRect(renderer, &rect);
-        //     rect = (SDL_Rect){350, lig * TAILLE_CASE, TAILLE_CASE / 4, TAILLE_CASE};
-        //     SDL_RenderFillRect(renderer, &rect);
-        // }
-        // if (lig > 1 && lig < 6)
-        // {
-        //     rect = (SDL_Rect){265, lig * TAILLE_CASE, TAILLE_CASE / 4, TAILLE_CASE};
-        //     SDL_RenderFillRect(renderer, &rect);
-
-        //     rect = (SDL_Rect){350, lig * TAILLE_CASE, TAILLE_CASE / 4, TAILLE_CASE};
-        //     SDL_RenderFillRect(renderer, &rect);
-        // }
-        // if (lig == 6)
-        // {
-        //     rect = (SDL_Rect){265, lig * TAILLE_CASE, 90, TAILLE_CASE / 4};
-        //     SDL_RenderFillRect(renderer, &rect);
-        // }
+      // Render
+      SDL_SetRenderDrawColor(renderer, color_tab[plateau_jeu[lig][col].carre].r, color_tab[plateau_jeu[lig][col].carre].g, color_tab[plateau_jeu[lig][col].carre].b, 255);
+      SDL_RenderFillRect(renderer, &rect);
     }
+
+    /* Ligne de séparation entre plateau de jeu et l'affiche de la preview/score */
+    rect = (SDL_Rect){(LARGEUR / 2) * TAILLE_CASE, lig * TAILLE_CASE, TAILLE_CASE / 2, TAILLE_CASE};
+
+    // Tetris Offset
+    moveRect(&rect);
+
+    SDL_SetRenderDrawColor(renderer, color_tab[8].r, color_tab[8].g, color_tab[8].b, 255);
+    SDL_RenderFillRect(renderer, &rect);
+
+    /* Encadré de la preview */
+    if (lig == 1)
+    {
+      rect = (SDL_Rect){265, lig * TAILLE_CASE, 90, TAILLE_CASE / 4};
+      moveRect(&rect);
+      SDL_RenderFillRect(renderer, &rect);
+
+      rect = (SDL_Rect){265, lig * TAILLE_CASE, TAILLE_CASE / 4, TAILLE_CASE};
+      moveRect(&rect);
+      SDL_RenderFillRect(renderer, &rect);
+      rect = (SDL_Rect){350, lig * TAILLE_CASE, TAILLE_CASE / 4, TAILLE_CASE};
+      moveRect(&rect);
+      SDL_RenderFillRect(renderer, &rect);
+    }
+    if (lig > 1 && lig < 6)
+    {
+      rect = (SDL_Rect){265, lig * TAILLE_CASE, TAILLE_CASE / 4, TAILLE_CASE};
+      moveRect(&rect);
+      SDL_RenderFillRect(renderer, &rect);
+
+      rect = (SDL_Rect){350, lig * TAILLE_CASE, TAILLE_CASE / 4, TAILLE_CASE};
+      moveRect(&rect);
+      SDL_RenderFillRect(renderer, &rect);
+    }
+    if (lig == 6)
+    {
+      rect = (SDL_Rect){265, lig * TAILLE_CASE, 90, TAILLE_CASE / 4};
+      moveRect(&rect);
+      SDL_RenderFillRect(renderer, &rect);
+    }
+  }
 }
 
-void afficher_texte(char Text[64], TTF_Font *police, SDL_Color color, float posX, float posY, SDL_Renderer *renderer)
+void afficher_texte(char Text[64], TTF_Font *police, SDL_Color color, float posX, float posY, SDL_Renderer *renderer, int centered)
 {
     SDL_Surface *surfaceTexte = TTF_RenderText_Blended(police, Text, color);
     if (surfaceTexte == NULL)
@@ -103,6 +142,10 @@ void afficher_texte(char Text[64], TTF_Font *police, SDL_Color color, float posX
             destRect.x = posX; /* Position X (à partir du coin supérieur gauche) */
             destRect.y = posY; /* Position Y (à partir du coin supérieur gauche) */
             /* Prend la largeur et hauteur depuis la texture créée */
+
+            // Tetris Offset
+            if (centered == 1)
+              moveRect(&destRect);
 
             SDL_QueryTexture(textureTexte, NULL, NULL, &destRect.w, &destRect.h);
 
@@ -134,6 +177,11 @@ void afficher_nbr(int nbr, char Text[64], int SZofText, TTF_Font *police, SDL_Co
             SDL_Rect destRect;
             destRect.x = posX; /* Position X (à partir du coin supérieur gauche) */
             destRect.y = posY; /* Position Y (à partir du coin supérieur gauche) */
+        
+            // Tetris Offset
+            moveRect(&destRect);
+
+
             /* Prend la largeur et hauteur depuis la texture créée */
             SDL_QueryTexture(textureTexte, NULL, NULL, &destRect.w, &destRect.h);
 
@@ -195,10 +243,10 @@ void start_screen(int *start_game, int *end_game, char Text[64], TTF_Font *polic
         posX = (L_FENETRE - w) / 2;
         posY += (3 * H_FENETRE / 4) - 27; 
         strcpy(Text, "Appuyez sur ESPACE");
-        afficher_texte(Text, police, color, posX, posY, renderer);
+        afficher_texte(Text, police, color, posX, posY, renderer, 0);
 
         strcpy(Text, "ESC - QUITTER");
-        afficher_texte(Text, police, grey, 0, H_FENETRE - 24, renderer);
+        afficher_texte(Text, police, grey, 0, H_FENETRE - 24, renderer, 1);
 
         SDL_RenderPresent(renderer);
     }
@@ -260,7 +308,7 @@ void menu_pause(int *pause, int *end_game, int *retour_accueil, char Text[64], T
 
         TTF_SizeText(police, "Pause", &w, &h);
         strcpy(Text, "Pause");
-        afficher_texte(Text, police, color, posX, posY, renderer);
+        afficher_texte(Text, police, color, posX, posY, renderer, 1);
 
         if (selection)
         {
@@ -284,19 +332,19 @@ void menu_pause(int *pause, int *end_game, int *retour_accueil, char Text[64], T
             posX = (LARGEUR * TAILLE_CASE - w) / 2;
             posY = (HAUTEUR * TAILLE_CASE / 2) - 20;
             strcpy(Text, "> Reprendre");
-            afficher_texte(Text, police, color, posX, posY, renderer);
+            afficher_texte(Text, police, color, posX, posY, renderer, 1);
 
             TTF_SizeText(police, "Ecran d'accueil", &w, &h);
             posX = (LARGEUR * TAILLE_CASE - w) / 2;
             posY = (HAUTEUR * TAILLE_CASE / 2);
             strcpy(Text, "Ecran d'accueil");
-            afficher_texte(Text, police, color, posX, posY, renderer);
+            afficher_texte(Text, police, color, posX, posY, renderer, 1);
 
             TTF_SizeText(police, "Quitter", &w, &h);
             posX = (LARGEUR * TAILLE_CASE - w) / 2;
             posY = (HAUTEUR * TAILLE_CASE / 2) + 20;
             strcpy(Text, "Quitter");
-            afficher_texte(Text, police, color, posX, posY, renderer);
+            afficher_texte(Text, police, color, posX, posY, renderer, 1);
         }
         if (choix == 1)
         {
@@ -304,19 +352,19 @@ void menu_pause(int *pause, int *end_game, int *retour_accueil, char Text[64], T
             posX = (LARGEUR * TAILLE_CASE - w) / 2;
             posY = (HAUTEUR * TAILLE_CASE / 2) - 20;
             strcpy(Text, "Reprendre");
-            afficher_texte(Text, police, color, posX, posY, renderer);
+            afficher_texte(Text, police, color, posX, posY, renderer, 1);
 
             TTF_SizeText(police, "> Ecran d'accueil", &w, &h);
             posX = (LARGEUR * TAILLE_CASE - w) / 2;
             posY = (HAUTEUR * TAILLE_CASE / 2);
             strcpy(Text, "> Ecran d'accueil");
-            afficher_texte(Text, police, color, posX, posY, renderer);
+            afficher_texte(Text, police, color, posX, posY, renderer, 1);
 
             TTF_SizeText(police, "Quitter", &w, &h);
             posX = (LARGEUR * TAILLE_CASE - w) / 2;
             posY = (HAUTEUR * TAILLE_CASE / 2) + 20;
             strcpy(Text, "Quitter");
-            afficher_texte(Text, police, color, posX, posY, renderer);
+            afficher_texte(Text, police, color, posX, posY, renderer, 1);
         }
         if (choix == 2)
         {
@@ -324,19 +372,19 @@ void menu_pause(int *pause, int *end_game, int *retour_accueil, char Text[64], T
             posX = (LARGEUR * TAILLE_CASE - w) / 2;
             posY = (HAUTEUR * TAILLE_CASE / 2) - 20;
             strcpy(Text, "Reprendre");
-            afficher_texte(Text, police, color, posX, posY, renderer);
+            afficher_texte(Text, police, color, posX, posY, renderer, 1);
 
             TTF_SizeText(police, "Ecran d'accueil", &w, &h);
             posX = (LARGEUR * TAILLE_CASE - w) / 2;
             posY = (HAUTEUR * TAILLE_CASE / 2);
             strcpy(Text, "Ecran d'accueil");
-            afficher_texte(Text, police, color, posX, posY, renderer);
+            afficher_texte(Text, police, color, posX, posY, renderer, 1);
 
             TTF_SizeText(police, "> Quitter", &w, &h);
             posX = (LARGEUR * TAILLE_CASE - w) / 2;
             posY = (HAUTEUR * TAILLE_CASE / 2) + 20;
             strcpy(Text, "> Quitter");
-            afficher_texte(Text, police, color, posX, posY, renderer);
+            afficher_texte(Text, police, color, posX, posY, renderer, 1);
         }
 
         SDL_RenderPresent(renderer);
@@ -406,7 +454,7 @@ void end_screen(int *NewGame, int *end_game, int *score, int *HighScore, int pos
             posX = (LARGEUR * TAILLE_CASE - w) / 2;
             posY = (HAUTEUR * TAILLE_CASE / 2) - 75;
             strcpy(Text, "Nouveau Record !");
-            afficher_texte(Text, police, color, posX, posY, renderer);
+            afficher_texte(Text, police, color, posX, posY, renderer, 0);
 
             snprintf(Text, SZofText, "%d", *HighScore);
             TTF_SizeText(police, Text, &w, &h);
@@ -419,7 +467,7 @@ void end_screen(int *NewGame, int *end_game, int *score, int *HighScore, int pos
         posX = (LARGEUR * TAILLE_CASE - w) / 2;
         posY = (HAUTEUR * TAILLE_CASE / 4);
         strcpy(Text, "FIN DE LA PARTIE");
-        afficher_texte(Text, police, color, posX, posY, renderer);
+        afficher_texte(Text, police, color, posX, posY, renderer, 1);
 
         if (selection)
         {
@@ -441,13 +489,13 @@ void end_screen(int *NewGame, int *end_game, int *score, int *HighScore, int pos
             posX = (LARGEUR * TAILLE_CASE - w) / 2;
             posY = (HAUTEUR * TAILLE_CASE / 2);
             strcpy(Text, "> Recommencer");
-            afficher_texte(Text, police, color, posX, posY, renderer);
+            afficher_texte(Text, police, color, posX, posY, renderer, 1);
 
             TTF_SizeText(police, "Quitter", &w, &h);
             posX = (LARGEUR * TAILLE_CASE - w) / 2;
             posY = (HAUTEUR * TAILLE_CASE / 2) + 20;
             strcpy(Text, "Quitter");
-            afficher_texte(Text, police, color, posX, posY, renderer);
+            afficher_texte(Text, police, color, posX, posY, renderer, 1);
         }
         if (choix == 1)
         {
@@ -455,13 +503,13 @@ void end_screen(int *NewGame, int *end_game, int *score, int *HighScore, int pos
             posX = (LARGEUR * TAILLE_CASE - w) / 2;
             posY = (HAUTEUR * TAILLE_CASE / 2);
             strcpy(Text, "Recommencer");
-            afficher_texte(Text, police, color, posX, posY, renderer);
+            afficher_texte(Text, police, color, posX, posY, renderer, 1);
 
             TTF_SizeText(police, "> Quitter", &w, &h);
             posX = (LARGEUR * TAILLE_CASE - w) / 2;
             posY = (HAUTEUR * TAILLE_CASE / 2) + 20;
             strcpy(Text, "> Quitter");
-            afficher_texte(Text, police, color, posX, posY, renderer);
+            afficher_texte(Text, police, color, posX, posY, renderer, 1);
         }
 
         SDL_RenderPresent(renderer);
