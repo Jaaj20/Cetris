@@ -39,11 +39,27 @@ void afficher_plateau(struct color color_tab[], struct plateau plateau_jeu[HAUTE
     int col;
     int lig;
     SDL_Rect rect;
+    SDL_Rect background;
+    SDL_Rect plateau;
 
-    for (lig = 17; lig < HAUTEUR; lig++)
+    // int posX, posY;
+    //int offsetLig = 170;
+
+    int w_bg = (LARGEUR/2)*TAILLE_CASE + 17;
+    background = (SDL_Rect){(L_FENETRE / 2) - w_bg / 2, 0, w_bg, H_FENETRE};
+    SDL_SetRenderDrawColor(renderer, color_tab[8].r, color_tab[8].g, color_tab[8].b, 255);
+    SDL_RenderFillRect(renderer, &background);
+
+    // int w_plateau = LARGEUR * TAILLE_CASE/2;
+    // int h_plateau = HAUTEUR * TAILLE_CASE/2;
+    // plateau = (SDL_Rect){(L_FENETRE / 2) - w_plateau/2, 17, w_plateau, h_plateau};
+    // SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+    // SDL_RenderFillRect(renderer, &plateau);
+
+    for (lig = 0; lig < HAUTEUR; lig++)
     {
         /* Plateau de Jeu */
-        for (col = (L_FENETRE/2 - 5*TAILLE_CASE); col < LARGEUR / 2; col++)
+        for (col = 0; col < LARGEUR / 2; col++)
         {
             rect = (SDL_Rect){col * TAILLE_CASE, lig * TAILLE_CASE, TAILLE_CASE, TAILLE_CASE};
             SDL_SetRenderDrawColor(renderer, color_tab[plateau_jeu[lig][col].carre].r, color_tab[plateau_jeu[lig][col].carre].g, color_tab[plateau_jeu[lig][col].carre].b, 255);
@@ -181,19 +197,20 @@ void start_screen(int *start_game, int *end_game, char Text[64], TTF_Font *polic
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255); // Fond noir
         SDL_RenderClear(renderer);
 
-        w = 608; h = 342;
-        posX = (L_FENETRE)/2 - (w/2);
+        w = 608;
+        h = 342;
+        posX = (L_FENETRE) / 2 - (w / 2);
         posY = 20;
         support.x = posX;
         support.y = posY;
-        support.w = w; 
+        support.w = w;
         support.h = h;
 
         SDL_RenderCopy(renderer, sprite, NULL, &support);
 
         TTF_SizeText(police, "Appuyez sur ESPACE", &w, &h);
         posX = (L_FENETRE - w) / 2;
-        posY += (3 * H_FENETRE / 4) - 27; 
+        posY += (3 * H_FENETRE / 4) - 27;
         strcpy(Text, "Appuyez sur ESPACE");
         afficher_texte(Text, police, color, posX, posY, renderer);
 
@@ -343,9 +360,9 @@ void menu_pause(int *pause, int *end_game, int *retour_accueil, char Text[64], T
     }
 }
 
-void end_screen(int *NewGame, int *end_game, int *score, int *HighScore, int posX, int posY, char Text[64], int SZofText, TTF_Font *police, SDL_Color color, SDL_Renderer *renderer)
+void end_screen(int *NewGame, int *end_game, int *score, int *HighScore, char Text[64], int SZofText, TTF_Font *police, SDL_Color color, SDL_Renderer *renderer)
 {
-    int w, h, choix = 0, selection = 0, record = 0;
+    int posX, posY, w, h, choix = 0, selection = 0, record = 0;
     SDL_Event event;
     FILE *save;
 

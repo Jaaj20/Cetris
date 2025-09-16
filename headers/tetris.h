@@ -34,7 +34,7 @@ struct piece
 
 struct plateau
 {
-    int carre; // VIDE si la case n'est pas occupée
+    int carre; /* VIDE si la case n'est pas occupée */
 };
 
 struct color

@@ -1,6 +1,11 @@
-cmake_minimum_required(VERSION 4.1.0)
+cmake_minimum_required(VERSION 3.28.3)
 
 project(Cetris LANGUAGES C)
+
+set(CMAKE_C_COMPILER "/usr/bin/gcc")
+set(CMAKE_C_STANDARD 99)
+set(CMAKE_C_STANDARD_REQUIRED ON)
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -g -Wextra -Wpedantic")
 
 set(SOURCE_FILES
     sources/main.c
@@ -9,13 +14,13 @@ set(SOURCE_FILES
     sources/affichage.c
 )
 
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR})
 if(WIN32)
     include_directories(
         ${CMAKE_SOURCE_DIR}/SDL2/include/SDL2
         ${CMAKE_SOURCE_DIR}/SDL2image/include/SDL2
         ${CMAKE_SOURCE_DIR}/SDL2ttf/include/SDL2
     )
-    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR})
     add_executable(${PROJECT_NAME} ${SOURCE_FILES})
     target_link_libraries(${PROJECT_NAME}
         mingw32
@@ -30,15 +35,10 @@ else()
     find_package(SDL2 REQUIRED)
     find_package(SDL2_image REQUIRED)
     find_package(SDL2_ttf REQUIRED)
-    include_directories(
-        ${SDL2_INCLUDE_DIRS}
-        ${SDL2_IMAGE_INCLUDE_DIRS}
-        ${SDL2_TTF_INCLUDE_DIRS}
-    )
     add_executable(${PROJECT_NAME} ${SOURCE_FILES})
     target_link_libraries(${PROJECT_NAME}
-        ${SDL2_LIBRARIES}
-        ${SDL2_IMAGE_LIBRARIES}
-        ${SDL2_TTF_LIBRARIES}
+        SDL2::SDL2
+        SDL2_image::SDL2_image
+        SDL2_ttf::SDL2_ttf
     )
 endif()

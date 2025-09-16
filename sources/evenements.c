@@ -22,8 +22,11 @@ Uint32 at_top_horloge(Uint32 interval, void *param)
 void initialiser(struct piece *p_tetromino, struct une_case tab[4], int indice)
 {
     int i;
-    p_tetromino->pos_colonne = (LARGEUR / 4) - 1;
-    p_tetromino->pos_ligne = 0;
+
+    /* Positions relatives des pièces dans le tableau */
+    p_tetromino->pos_colonne = (L_FENETRE / 2);
+    p_tetromino->pos_ligne = 17;
+    
     for (i = 0; i < 4; i++)
     {
         p_tetromino->la_piece[i] = tab[i];

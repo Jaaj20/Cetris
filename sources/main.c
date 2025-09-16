@@ -260,7 +260,7 @@ int main(int argc, char *argv[])
                 /* on verifie si la partie est perdue */
                 if (partie_perdue(plateau_jeu) != 0)
                 {
-                    end_screen(&NewGame, &end_game, &score, &HighScore, posX, posY, Text, SZofText, police, white, renderer);
+                    end_screen(&NewGame, &end_game, &score, &HighScore, Text, SZofText, police, white, renderer);
                 }
 
                 /* on genère une nouvelle pièce */
@@ -317,7 +317,7 @@ int main(int argc, char *argv[])
             /* on verifie si la partie est perdue */
             if (partie_perdue(plateau_jeu))
             {
-                end_screen(&NewGame, &end_game, &score, &HighScore, posX, posY, Text, SZofText, police, white, renderer);
+                end_screen(&NewGame, &end_game, &score, &HighScore, Text, SZofText, police, white, renderer);
             }
 
             /* on genère une nouvelle pièce */
