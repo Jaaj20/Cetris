@@ -24,8 +24,8 @@ void initialiser(struct piece *p_tetromino, struct une_case tab[4], int indice)
     int i;
 
     /* Positions relatives des pièces dans le tableau */
-    p_tetromino->pos_colonne = (L_FENETRE / 2);
-    p_tetromino->pos_ligne = 17;
+    p_tetromino->pos_colonne = (LARGEUR / 2) - 1;
+    p_tetromino->pos_ligne = 0;
     
     for (i = 0; i < 4; i++)
     {
@@ -35,22 +35,22 @@ void initialiser(struct piece *p_tetromino, struct une_case tab[4], int indice)
     p_tetromino->type = indice;
 }
 
-int supprimer_lignes(struct plateau plateau_jeu[HAUTEUR][LARGEUR / 2], int *score)
+int supprimer_lignes(struct plateau plateau_jeu[HAUTEUR][LARGEUR], int *score)
 {
     int lig, col, lig_suppr = 0;
 
     for (lig = 0; lig < HAUTEUR; lig++)
     {
         int rempli = 0;
-        for (col = 0; col < LARGEUR / 2; col++)
+        for (col = 0; col < LARGEUR; col++)
         {
             if (plateau_jeu[lig][col].carre != VIDE)
                 rempli++;
         }
-        if (rempli == LARGEUR / 2)
+        if (rempli == LARGEUR)
         {
             /* suppression de la ligne */
-            for (col = 0; col < LARGEUR / 2; col++)
+            for (col = 0; col < LARGEUR; col++)
             {
                 plateau_jeu[lig][col].carre = VIDE;
             }
@@ -58,7 +58,7 @@ int supprimer_lignes(struct plateau plateau_jeu[HAUTEUR][LARGEUR / 2], int *scor
             int indice = lig;
             for (lig = indice; lig > 0; lig--)
             {
-                for (col = LARGEUR / 2 - 1; col >= 0; col--)
+                for (col = LARGEUR - 1; col >= 0; col--)
                 {
                     plateau_jeu[lig][col].carre = plateau_jeu[lig - 1][col].carre;
                 }
@@ -79,9 +79,9 @@ int supprimer_lignes(struct plateau plateau_jeu[HAUTEUR][LARGEUR / 2], int *scor
     return lig_suppr;
 }
 
-int partie_perdue(struct plateau plateau_jeu[HAUTEUR][LARGEUR / 2])
+int partie_perdue(struct plateau plateau_jeu[HAUTEUR][LARGEUR])
 {
-    for (int i = 0; i < LARGEUR / 2; i++)
+    for (int i = 0; i < LARGEUR; i++)
     {
         if (plateau_jeu[0][i].carre != VIDE)
             return 1;

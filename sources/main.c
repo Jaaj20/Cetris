@@ -59,18 +59,18 @@ int main(int argc, char *argv[])
     /* Besoins de SDL */
 
     SDL_Event event;               /* l'evenement a traiter */
-    SDL_Renderer *renderer; /* gere le rendu graphique de la fênetre */
+    SDL_Renderer *renderer;        /* gere le rendu graphique de la fênetre */
 
     /* Allocation de l'espace du texte et ses paramètres */
 
     char Text[64];                          /* Tableau contenant le texte*/
     int SZofText = sizeof(Text);            /* Taille de la chaîne de caractères */
-    int posX, posY;                         /* Coordonnées du texte affiché  */
+    // int posX, posY;                         /* Coordonnées du texte affiché  */
     SDL_Color white = {255, 255, 255, 255}; /* Couleur du texte */
 
     SDL_Surface *logo;
 
-    struct plateau plateau_jeu[HAUTEUR][LARGEUR / 2];
+    struct plateau plateau_jeu[HAUTEUR][LARGEUR];
     struct piece tetromino;
     struct piece preview;
 
@@ -106,7 +106,7 @@ int main(int argc, char *argv[])
 
     for (int i = 0; i < HAUTEUR; i++)
     {
-        for (int j = 0; j < LARGEUR / 2; j++)
+        for (int j = 0; j < LARGEUR; j++)
         {
             plateau_jeu[i][j].carre = VIDE;
         }
@@ -248,7 +248,7 @@ int main(int argc, char *argv[])
                 {
                     int lig = tetromino.pos_ligne + tetromino.la_piece[i].ligne;
                     int col = tetromino.pos_colonne + tetromino.la_piece[i].colonne;
-                    if (lig >= 0 && lig < HAUTEUR && col >= 0 && col < LARGEUR / 2)
+                    if (lig >= 0 && lig < HAUTEUR && col >= 0 && col < LARGEUR)
                     {
                         plateau_jeu[lig][col].carre = tetromino.type;
                     }
@@ -303,9 +303,9 @@ int main(int argc, char *argv[])
             /* Sauvegarde de la pièce dans le plateau */
             for (int i = 0; i < 4; i++)
             {
-                int lig = tetromino.pos_ligne + tetromino.la_piece[i].ligne;
+                int lig = tetromino.pos_ligne + tetromino.la_piece[i].ligne ;
                 int col = tetromino.pos_colonne + tetromino.la_piece[i].colonne;
-                if (lig >= 0 && lig < HAUTEUR && col >= 0 && col < LARGEUR / 2)
+                if (lig >= 0 && lig < HAUTEUR && col >= 0 && col < LARGEUR)
                 {
                     plateau_jeu[lig][col].carre = tetromino.type;
                 }
@@ -332,7 +332,7 @@ int main(int argc, char *argv[])
         {
             for (int i = 0; i < HAUTEUR; i++)
             {
-                for (int j = 0; j < LARGEUR / 2; j++)
+                for (int j = 0; j < LARGEUR; j++)
                 {
                     plateau_jeu[i][j].carre = VIDE;
                 }
@@ -363,28 +363,7 @@ int main(int argc, char *argv[])
         {
             SDL_RenderClear(renderer);
             afficher_plateau(color_tab, plateau_jeu, renderer);
-
-            strcpy(Text, "High Score:");
-            posX = 2.3 * (LARGEUR * TAILLE_CASE) / 4, posY = (HAUTEUR * TAILLE_CASE) / 2 - 50;
-            afficher_texte(Text, police, white, posX, posY, renderer);
-
-            posY += 25;
-            afficher_nbr(HighScore, Text, SZofText, police, white, posX, posY, renderer);
-
-            strcpy(Text, "Score:");
-            posY += 30;
-            afficher_texte(Text, police, white, posX, posY, renderer);
-
-            posY += 25;
-            afficher_nbr(score, Text, SZofText, police, white, posX, posY, renderer);
-
-            strcpy(Text, "Niveau:");
-            posY += 30;
-            afficher_texte(Text, police, white, posX, posY, renderer);
-
-            posY += 25;
-            afficher_nbr(niveau, Text, SZofText, police, white, posX, posY, renderer);
-
+            //./afficher_scores(HighScore, score, niveau, Text, SZofText, white, police, renderer);
             afficher_preview(preview, color_tab[preview.type], renderer);
             afficher_viseur(&tetromino, color_tab, plateau_jeu, renderer);
             afficher_piece(tetromino, color_tab[tetromino.type], renderer);
@@ -397,6 +376,7 @@ int main(int argc, char *argv[])
 
     TTF_CloseFont(police);
     SDL_FreeSurface(logo);
+    SDL_RemoveTimer(horloge);
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(fenetre);
 

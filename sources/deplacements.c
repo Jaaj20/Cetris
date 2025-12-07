@@ -1,6 +1,6 @@
 #include "../headers/tetris.h"
 
-int descendre(struct plateau plateau_jeu[HAUTEUR][LARGEUR / 2], struct piece *p_tetromino)
+int descendre(struct plateau plateau_jeu[HAUTEUR][LARGEUR], struct piece *p_tetromino)
 {
     int i;
     /* Verification des cases libres en dessous de la pièce */
@@ -21,7 +21,7 @@ int descendre(struct plateau plateau_jeu[HAUTEUR][LARGEUR / 2], struct piece *p_
     return 1;
 }
 
-void decaler_gauche(struct plateau plateau_jeu[HAUTEUR][LARGEUR / 2], struct piece *p_tetromino)
+void decaler_gauche(struct plateau plateau_jeu[HAUTEUR][LARGEUR], struct piece *p_tetromino)
 {
     int i;
     int libre = 1;
@@ -45,7 +45,7 @@ void decaler_gauche(struct plateau plateau_jeu[HAUTEUR][LARGEUR / 2], struct pie
     }
 }
 
-void decaler_droite(struct plateau plateau_jeu[HAUTEUR][LARGEUR / 2], struct piece *p_tetromino)
+void decaler_droite(struct plateau plateau_jeu[HAUTEUR][LARGEUR], struct piece *p_tetromino)
 {
     int i;
     int libre = 1;
@@ -69,7 +69,7 @@ void decaler_droite(struct plateau plateau_jeu[HAUTEUR][LARGEUR / 2], struct pie
     }
 }
 
-void rotation_gauche(struct plateau plateau_jeu[HAUTEUR][LARGEUR / 2], struct piece *p_tetromino)
+void rotation_gauche(struct plateau plateau_jeu[HAUTEUR][LARGEUR], struct piece *p_tetromino)
 {
     int i = 0;
     int libre = 0;
@@ -93,7 +93,7 @@ void rotation_gauche(struct plateau plateau_jeu[HAUTEUR][LARGEUR / 2], struct pi
         abs_lig += cl;
 
         /* Vérification que les cases occupées par la pièce post rotation soient libres */
-        if (abs_lig >= 0 && abs_lig < HAUTEUR && abs_col >= 0 && abs_col < LARGEUR / 2 && plateau_jeu[abs_lig][abs_col].carre == VIDE)
+        if (abs_lig >= 0 && abs_lig < HAUTEUR && abs_col >= 0 && abs_col < LARGEUR && plateau_jeu[abs_lig][abs_col].carre == VIDE)
         {
             libre++;
             pos_tab[i].colonne = lig + cc;
@@ -111,7 +111,7 @@ void rotation_gauche(struct plateau plateau_jeu[HAUTEUR][LARGEUR / 2], struct pi
     }
 }
 
-void rotation_droite(struct plateau plateau_jeu[HAUTEUR][LARGEUR / 2], struct piece *p_tetromino)
+void rotation_droite(struct plateau plateau_jeu[HAUTEUR][LARGEUR], struct piece *p_tetromino)
 {
     int i = 0;
     int libre = 0;
@@ -135,7 +135,7 @@ void rotation_droite(struct plateau plateau_jeu[HAUTEUR][LARGEUR / 2], struct pi
         abs_lig += cl;
 
         /* Vérification que les cases occupées par la pièce post rotation soient libres */
-        if (abs_lig >= 0 && abs_lig < HAUTEUR && abs_col >= 0 && abs_col < LARGEUR / 2 && plateau_jeu[abs_lig][abs_col].carre == VIDE)
+        if (abs_lig >= 0 && abs_lig < HAUTEUR && abs_col >= 0 && abs_col < LARGEUR && plateau_jeu[abs_lig][abs_col].carre == VIDE)
         {
             libre++;
             pos_tab[i].colonne = -lig + cc;
@@ -153,7 +153,7 @@ void rotation_droite(struct plateau plateau_jeu[HAUTEUR][LARGEUR / 2], struct pi
     }
 }
 
-void hard_drop(struct plateau plateau_jeu[HAUTEUR][LARGEUR / 2], struct piece *p_tetromino)
+void hard_drop(struct plateau plateau_jeu[HAUTEUR][LARGEUR], struct piece *p_tetromino)
 {
     /* Pretty much straightforward */
     int descente;

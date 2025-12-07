@@ -10,9 +10,9 @@ Uint32 at_top_horloge(Uint32 interval, void *param);
 void initialiser(struct piece *p_tetromino, struct une_case tab[4], int indice);
 
 /* Verification et suppression des lignes remplies + MAJ du score */
-int supprimer_lignes(struct plateau plateau_jeu[HAUTEUR][LARGEUR / 2], int *score);
+int supprimer_lignes(struct plateau plateau_jeu[HAUTEUR][LARGEUR], int *score);
 
 /* Verification et affichage du statut */
-int partie_perdue(struct plateau plateau_jeu[HAUTEUR][LARGEUR / 2]);
+int partie_perdue(struct plateau plateau_jeu[HAUTEUR][LARGEUR]);
 
 #endif

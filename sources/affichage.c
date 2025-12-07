@@ -6,12 +6,14 @@ void afficher_piece(struct piece tetromino, struct color color_tab, SDL_Renderer
 {
     int i;
     int ligne_deb, colonne_deb;
+    int w_plateau = LARGEUR * TAILLE_CASE;
+    int offsetLig = 17, offsetCol = (L_FENETRE / 2) - w_plateau / 2;
 
     for (i = 0; i < 4; i++)
     {
         ligne_deb = (tetromino.pos_ligne + tetromino.la_piece[i].ligne) * TAILLE_CASE;
         colonne_deb = (tetromino.pos_colonne + tetromino.la_piece[i].colonne) * TAILLE_CASE;
-        SDL_Rect rect = {colonne_deb, ligne_deb, TAILLE_CASE, TAILLE_CASE};
+        SDL_Rect rect = {colonne_deb + offsetCol, ligne_deb + offsetLig, TAILLE_CASE, TAILLE_CASE};
         SDL_SetRenderDrawColor(renderer, color_tab.r, color_tab.g, color_tab.b, 255);
         SDL_RenderFillRect(renderer, &rect);
     }
@@ -22,46 +24,39 @@ void afficher_preview(struct piece tetromino, struct color color_tab, SDL_Render
     int i;
     int ligne_deb, colonne_deb;
     tetromino.pos_ligne = 2;
-    tetromino.pos_colonne = 14;
+    tetromino.pos_colonne = 17;
+    int w_plateau = LARGEUR * TAILLE_CASE;
+    int offsetCol = (L_FENETRE / 2) - w_plateau / 2;
 
+     
     for (i = 0; i < 4; i++)
     {
         ligne_deb = (tetromino.pos_ligne + tetromino.la_piece[i].ligne) * TAILLE_CASE;
         colonne_deb = 10 + (tetromino.pos_colonne + tetromino.la_piece[i].colonne) * TAILLE_CASE;
-        SDL_Rect rect = {colonne_deb, ligne_deb, TAILLE_CASE, TAILLE_CASE};
+        SDL_Rect rect = {colonne_deb + offsetCol, ligne_deb, TAILLE_CASE, TAILLE_CASE};
         SDL_SetRenderDrawColor(renderer, color_tab.r, color_tab.g, color_tab.b, 255);
         SDL_RenderFillRect(renderer, &rect);
     }
 }
 
-void afficher_plateau(struct color color_tab[], struct plateau plateau_jeu[HAUTEUR][LARGEUR / 2], SDL_Renderer *renderer)
+void afficher_plateau(struct color color_tab[], struct plateau plateau_jeu[HAUTEUR][LARGEUR], SDL_Renderer *renderer)
 {
-    int col;
-    int lig;
     SDL_Rect rect;
     SDL_Rect background;
-    SDL_Rect plateau;
+    int col, lig;
+    int w_plateau = LARGEUR * TAILLE_CASE;
+    int offsetLig = 17, offsetCol = (L_FENETRE / 2) - w_plateau / 2;
 
-    // int posX, posY;
-    //int offsetLig = 170;
-
-    int w_bg = (LARGEUR/2)*TAILLE_CASE + 17;
-    background = (SDL_Rect){(L_FENETRE / 2) - w_bg / 2, 0, w_bg, H_FENETRE};
+    background = (SDL_Rect){0, 0, L_FENETRE, H_FENETRE};
     SDL_SetRenderDrawColor(renderer, color_tab[8].r, color_tab[8].g, color_tab[8].b, 255);
     SDL_RenderFillRect(renderer, &background);
-
-    // int w_plateau = LARGEUR * TAILLE_CASE/2;
-    // int h_plateau = HAUTEUR * TAILLE_CASE/2;
-    // plateau = (SDL_Rect){(L_FENETRE / 2) - w_plateau/2, 17, w_plateau, h_plateau};
-    // SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-    // SDL_RenderFillRect(renderer, &plateau);
 
     for (lig = 0; lig < HAUTEUR; lig++)
     {
         /* Plateau de Jeu */
-        for (col = 0; col < LARGEUR / 2; col++)
+        for (col = 0; col < LARGEUR; col++)
         {
-            rect = (SDL_Rect){col * TAILLE_CASE, lig * TAILLE_CASE, TAILLE_CASE, TAILLE_CASE};
+            rect = (SDL_Rect){col * TAILLE_CASE + offsetCol, lig * TAILLE_CASE + offsetLig, TAILLE_CASE, TAILLE_CASE};
             SDL_SetRenderDrawColor(renderer, color_tab[plateau_jeu[lig][col].carre].r, color_tab[plateau_jeu[lig][col].carre].g, color_tab[plateau_jeu[lig][col].carre].b, 255);
             SDL_RenderFillRect(renderer, &rect);
         }
@@ -98,7 +93,7 @@ void afficher_plateau(struct color color_tab[], struct plateau plateau_jeu[HAUTE
     }
 }
 
-void afficher_texte(char Text[64], TTF_Font *police, SDL_Color color, float posX, float posY, SDL_Renderer *renderer)
+void afficher_texte(char *Text, TTF_Font *police, SDL_Color color, float posX, float posY, SDL_Renderer *renderer)
 {
     SDL_Surface *surfaceTexte = TTF_RenderText_Blended(police, Text, color);
     if (surfaceTexte == NULL)
@@ -129,7 +124,7 @@ void afficher_texte(char Text[64], TTF_Font *police, SDL_Color color, float posX
     }
 }
 
-void afficher_nbr(int nbr, char Text[64], int SZofText, TTF_Font *police, SDL_Color color, float posX, float posY, SDL_Renderer *renderer)
+void afficher_nbr(int nbr, char *Text, int SZofText, TTF_Font *police, SDL_Color color, float posX, float posY, SDL_Renderer *renderer)
 {
     snprintf(Text, SZofText, "%d", nbr);
     SDL_Surface *surfaceTexte = TTF_RenderText_Blended(police, Text, color);
@@ -222,7 +217,7 @@ void start_screen(int *start_game, int *end_game, char Text[64], TTF_Font *polic
     SDL_DestroyTexture(sprite);
 }
 
-void afficher_viseur(struct piece *p_tetromino, struct color color_tab[], struct plateau plateau_jeu[HAUTEUR][LARGEUR / 2], SDL_Renderer *renderer)
+void afficher_viseur(struct piece *p_tetromino, struct color color_tab[], struct plateau plateau_jeu[HAUTEUR][LARGEUR], SDL_Renderer *renderer)
 {
     struct piece viseur = *p_tetromino;
     hard_drop(plateau_jeu, &viseur);
@@ -270,7 +265,7 @@ void menu_pause(int *pause, int *end_game, int *retour_accueil, char Text[64], T
             }
         }
 
-        posX = (LARGEUR * TAILLE_CASE / 2) - 40;
+        posX = (LARGEUR * TAILLE_CASE) - 40;
         posY = (HAUTEUR * TAILLE_CASE / 4);
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255); // Fond noir
         SDL_RenderClear(renderer);
@@ -483,4 +478,30 @@ void end_screen(int *NewGame, int *end_game, int *score, int *HighScore, char Te
 
         SDL_RenderPresent(renderer);
     }
+}
+
+void afficher_scores(int HighScore, int score, int niveau, char Text[64], int SZofText, SDL_Color white, TTF_Font *police, SDL_Renderer *renderer)
+{
+    int posX, posY;
+    // strcpy(Text, "High Score:");
+    posX = W_BG + (L_FENETRE - W_BG) / 2;
+    posY = H_FENETRE / 2;
+    afficher_texte("High Score", police, white, posX, posY, renderer);
+
+    posY += 25;
+    afficher_nbr(HighScore, Text, SZofText, police, white, posX, posY, renderer);
+
+    strcpy(Text, "Score:");
+    posY += 30;
+    afficher_texte("Score", police, white, posX, posY, renderer);
+
+    posY += 25;
+    afficher_nbr(score, Text, SZofText, police, white, posX, posY, renderer);
+
+    strcpy(Text, "Niveau:");
+    posY += 30;
+    afficher_texte("Niveau", police, white, posX, posY, renderer);
+
+    posY += 25;
+    afficher_nbr(niveau, Text, SZofText, police, white, posX, posY, renderer);
 }
