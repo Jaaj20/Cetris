@@ -1,32 +1,42 @@
 # Cetris
 
-Tetris codé en C en tant que projet perso pour apprendre le langage
+Tetris clone coded in C as a personal project to learn the language and explore game development fundamentals.
 
-## Prérequis
-- SDL2 (https://github.com/libsdl-org/SDL/releases/tag/release-2.32.8)
-- SDL2_ttf (https://github.com/libsdl-org/SDL_ttf/releases/tag/release-2.24.0)
+## Features
+- Classic Tetris gameplay with newer features as the Hold Piece mechanic.
+- Score and level system.
+- Cross-platform support for Windows & Linux.
 
-Maintenant aussi compatible avec Linux
+## Prerequisites
 
-## Installation
-1. Télécharger SDL2, SDL2_ttf, leurs fichiers .dll respectifs et l'éxécutable du jeu.
+SDL2
+https://github.com/libsdl-org/SDL/releases/tag/release-2.32.8
 
-2. Tout mettre dans le même dossier
+SDL2_ttf
+https://github.com/libsdl-org/SDL_ttf/releases/tag/release-2.24.0
 
-3. Ouvrir l'éxécutable (ou compiler manuellement avec le makefile)
+## In progress...
 
-## Contrôles
-Menu Pause: **ESC**
+Cleaner graphics & UI improvements.
 
-Descendre: **FLECHE BAS**
+Code cleaning and optimization.
 
-Droite: **FLECHE DROITE**
+## Controls
 
-Gauche: **FLECHE GAUCHE**
+Pause Menu: **ESC**
 
-Rotation vers la droite: **G**
+Move Left:	**LEFT ARROW**
 
-Rotation vers la gauche: **D**
+Move Right:	**RIGHT ARROW**
 
-Hard Drop: **ESPACE**
+Soft Drop:	**DOWN ARROW**
+
+Rotate Clockwise:	**G**
+
+Rotate Counter-Clockwise:	**D**
+
+Hard Drop:	**SPACE**
+
+
+
 
