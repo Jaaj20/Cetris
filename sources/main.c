@@ -121,6 +121,13 @@ int main(int argc, char *argv[])
         exit(1);
     }
 
+    TTF_Font *title = TTF_OpenFont("SDL2ttf/upheavtt.ttf", 50);
+    if (police == NULL)
+    {
+        fprintf(stderr, "ERREUR FATALE : Impossible de charger la police. TTF_OpenFont: %s\n", TTF_GetError());
+        exit(1);
+    }
+
     logo = IMG_Load("textures/logo_cetris.png");
     if (logo == NULL)
     {
@@ -224,7 +231,7 @@ int main(int argc, char *argv[])
 
         if (Pause)
         {
-            menu_pause(&Pause, &end_game, &retour_accueil, Text, police, white, renderer);
+            menu_pause(&Pause, &end_game, &retour_accueil, Text, police, title, white, renderer);
         }
 
         if (retour_accueil) /* Retour à l'accueil depuis le menu pause */
@@ -260,7 +267,7 @@ int main(int argc, char *argv[])
                 /* on verifie si la partie est perdue */
                 if (partie_perdue(plateau_jeu) != 0)
                 {
-                    end_screen(&NewGame, &end_game, &score, &HighScore, Text, SZofText, police, white, renderer);
+                    end_screen(&NewGame, &end_game, &score, &HighScore, Text, SZofText, police, title, white, renderer);
                 }
 
                 /* on genère une nouvelle pièce */
@@ -317,7 +324,7 @@ int main(int argc, char *argv[])
             /* on verifie si la partie est perdue */
             if (partie_perdue(plateau_jeu))
             {
-                end_screen(&NewGame, &end_game, &score, &HighScore, Text, SZofText, police, white, renderer);
+                end_screen(&NewGame, &end_game, &score, &HighScore, Text, SZofText, police, title, white, renderer);
             }
 
             /* on genère une nouvelle pièce */
@@ -363,7 +370,7 @@ int main(int argc, char *argv[])
         {
             SDL_RenderClear(renderer);
             afficher_plateau(color_tab, plateau_jeu, renderer);
-            //./afficher_scores(HighScore, score, niveau, Text, SZofText, white, police, renderer);
+            afficher_scores(HighScore, score, niveau, Text, SZofText, white, police, renderer);
             afficher_preview(preview, color_tab[preview.type], renderer);
             afficher_viseur(&tetromino, color_tab, plateau_jeu, renderer);
             afficher_piece(tetromino, color_tab[tetromino.type], renderer);

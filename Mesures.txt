@@ -1,2 +1,6 @@
 Plateau de jeu: 506x460
 Coos du plateau: x= (L_FENETRE/2 - 10*TAILLE_CASE) , y= 17 
+
+Bugs: 
+- Laisser un délai quand la pièce atteint le fond du tableau pour la bouger
+- Ameliorer le menu pause en faisant bouger la flèche au lieu de recharger tout l'écran

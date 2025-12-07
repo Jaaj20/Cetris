@@ -14,9 +14,9 @@
 #define HAUTEUR 22
 #define LARGEUR 10
 #define W_BG  (LARGEUR)*TAILLE_CASE + 17
-#define VIDE 7                /* n'importe quelle valeur qui n'est pas un indice du tableau des couleurs */
-#define CHANGEMENT_NIVEAU 8  /* indique combien de lignes doivent avoir ete supprimees pour changer de niveau */
-#define DIMINUTION_PERIODE 75 /* décrémentation de la periode d'horloge de 50 ms */
+#define VIDE 8                /* Couleur des cases vides */
+#define CHANGEMENT_NIVEAU 8  /* Indique combien de lignes doivent avoir ete supprimees pour changer de niveau */
+#define DIMINUTION_PERIODE 75 /* Décrémentation de la periode d'horloge de 50 ms */
 #define TRUE 1
 #define FALSE 0
 

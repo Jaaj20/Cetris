@@ -26,10 +26,10 @@ void afficher_nbr(int nbr, char Text, int SZofText, TTF_Font *police, SDL_Color 
 void start_screen(int *start_game, int *end_game, char Text[64], TTF_Font *police, SDL_Color color, SDL_Surface *logo, SDL_Renderer *renderer);
 
 /* Affiche un menu pause */
-void menu_pause(int *pause, int *end_game, int *retour_accueil, char Text[64], TTF_Font *police, SDL_Color color, SDL_Renderer *renderer);
+void menu_pause(int *pause, int *end_game, int *retour_accueil, char Text[64], TTF_Font *police, TTF_Font *title, SDL_Color color, SDL_Renderer *renderer);
 
 /* Affiche un écran de fin */
-void end_screen(int *NewGame, int *end_game, int *score, int *HighScore, char Text[64], int SZofText, TTF_Font *police, SDL_Color color, SDL_Renderer *renderer);
+void end_screen(int *NewGame, int *end_game, int *score, int *HighScore, char Text[64], int SZofText, TTF_Font *police, TTF_Font *title, SDL_Color color, SDL_Renderer *renderer);
 
 /* Affiche les scores sur l'écran de jeu */
 void afficher_scores(int HighScore, int score, int niveau, char Text[64], int SZofText, SDL_Color white, TTF_Font *police, SDL_Renderer *renderer);
