@@ -4,16 +4,17 @@
 /* Affiche une piece */
 void afficher_piece(struct piece tetromino, struct color color_tab, SDL_Renderer *renderer)
 {
-    int i;
     int ligne_deb, colonne_deb;
     int w_plateau = LARGEUR * TAILLE_CASE;
     int offsetLig = 17, offsetCol = (L_FENETRE / 2) - w_plateau / 2;
 
-    for (i = 0; i < 4; i++)
+    for (int i = 0; i < 4; i++)
     {
         ligne_deb = (tetromino.pos_ligne + tetromino.la_piece[i].ligne) * TAILLE_CASE;
         colonne_deb = (tetromino.pos_colonne + tetromino.la_piece[i].colonne) * TAILLE_CASE;
+
         SDL_Rect rect = {colonne_deb + offsetCol, ligne_deb + offsetLig, TAILLE_CASE, TAILLE_CASE};
+        
         SDL_SetRenderDrawColor(renderer, color_tab.r, color_tab.g, color_tab.b, 255);
         SDL_RenderFillRect(renderer, &rect);
     }
@@ -21,7 +22,6 @@ void afficher_piece(struct piece tetromino, struct color color_tab, SDL_Renderer
 
 void afficher_preview(struct piece tetromino, struct color color_tab, SDL_Renderer *renderer)
 {
-    int i;
     int ligne_deb, colonne_deb;
     tetromino.pos_ligne = 2;
     tetromino.pos_colonne = 17;
@@ -29,7 +29,7 @@ void afficher_preview(struct piece tetromino, struct color color_tab, SDL_Render
     int offsetCol = (L_FENETRE / 2) - w_plateau / 2;
 
      
-    for (i = 0; i < 4; i++)
+    for (int i = 0; i < 4; i++)
     {
         ligne_deb = (tetromino.pos_ligne + tetromino.la_piece[i].ligne) * TAILLE_CASE;
         colonne_deb = 10 + (tetromino.pos_colonne + tetromino.la_piece[i].colonne) * TAILLE_CASE;
@@ -113,8 +113,8 @@ void afficher_texte(char *Text, TTF_Font *police, SDL_Color color, float posX, f
             SDL_Rect destRect;
             destRect.x = posX; /* Position X (à partir du coin supérieur gauche) */
             destRect.y = posY; /* Position Y (à partir du coin supérieur gauche) */
+            
             /* Prend la largeur et hauteur depuis la texture créée */
-
             SDL_QueryTexture(textureTexte, NULL, NULL, &destRect.w, &destRect.h);
 
             SDL_RenderCopy(renderer, textureTexte, NULL, &destRect);
@@ -145,6 +145,7 @@ void afficher_nbr(int nbr, char *Text, int SZofText, TTF_Font *police, SDL_Color
             SDL_Rect destRect;
             destRect.x = posX; /* Position X (à partir du coin supérieur gauche) */
             destRect.y = posY; /* Position Y (à partir du coin supérieur gauche) */
+            
             /* Prend la largeur et hauteur depuis la texture créée */
             SDL_QueryTexture(textureTexte, NULL, NULL, &destRect.w, &destRect.h);
 

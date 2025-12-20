@@ -33,7 +33,7 @@ int main(int argc, char *argv[])
 
     /* DECLARATIONS */
 
-    int indice; /* l'indice (type) de la piece jouee */
+    int indice = 0; /* l'indice (type) de la piece jouee */
 
     /* Actions du Joueur */
 
@@ -47,28 +47,25 @@ int main(int argc, char *argv[])
 
     /* Fonctionnement de la boucle */
 
-    int descente_OK = TRUE; /* determine si la piece peut encore descendre */
-    int start_game = FALSE; /* passe a TRUE lorsque l'utilisateur appuie sur ESPACE dans l'écran d'accueil */
-    int end_game = FALSE;   /* passe a TRUE si l'utilsateur utilise la touche ESCAPE permet un arret premature de la partie  */
-    int Pause = FALSE;
-    int retour_accueil = FALSE;
+    int descente_OK = TRUE;         /* determine si la piece peut encore descendre */
+    int start_game = FALSE;         /* passe a TRUE lorsque l'utilisateur appuie sur ESPACE dans l'écran d'accueil */
+    int end_game = FALSE;           /* passe a TRUE si l'utilisateur utilise ferme la fenêtre */
+    int Pause = FALSE;              /* passe a TRUE si l'utilisateur appuie sur ESCAPE, active le menu pause */
+    int retour_accueil = FALSE;     /* passe a TRUE si dans le menu pause, le joueur sélectionne un retour à l'écran d'accueil */
     int cpt = 0, niveau = 1, score = 0, HighScore = 0;
-    SDL_TimerID horloge;     /* l'identifiant de l'horloge qui cadence la chute des pieces */
-    Uint32 intervalle = 500; /* la periode de l'horloge (en ms) */
+    SDL_TimerID horloge;            /* l'identifiant de l'horloge qui cadence la chute des pieces */
+    Uint32 intervalle = 500;        /* la periode de l'horloge (en ms) */
 
     /* Besoins de SDL */
 
-    SDL_Event event;               /* l'evenement a traiter */
-    SDL_Renderer *renderer;        /* gere le rendu graphique de la fênetre */
+    SDL_Event event;                /* l'evenement a traiter */
+    SDL_Renderer *renderer;         /* gere le rendu graphique de la fênetre */
 
     /* Allocation de l'espace du texte et ses paramètres */
 
-    char Text[64];                          /* Tableau contenant le texte*/
-    int SZofText = sizeof(Text);            /* Taille de la chaîne de caractères */
-    // int posX, posY;                         /* Coordonnées du texte affiché  */
-    SDL_Color white = {255, 255, 255, 255}; /* Couleur du texte */
-
-    SDL_Surface *logo;
+    char Text[64];                  /* Tableau contenant le texte*/
+    int SZofText = sizeof(Text);    /* Taille de la chaîne de caractères */
+    SDL_Color white = {255, 255, 255, 255};     /* Couleur du texte */
 
     struct plateau plateau_jeu[HAUTEUR][LARGEUR];
     struct piece tetromino;
@@ -80,8 +77,8 @@ int main(int argc, char *argv[])
 
     /* INITIALISATIONS */
 
+    /* Tableau contenant les pièces */
     struct une_case tab_pieces[7][4] = {
-        /* Tableau contenant les pièces */
         {{0, 0}, {0, 1}, {1, 0}, {1, 1}}, // O
         {{0, 0}, {0, 1}, {0, 2}, {0, 3}}, // I
         {{0, 0}, {0, 1}, {0, 2}, {1, 2}}, // L
@@ -91,28 +88,19 @@ int main(int argc, char *argv[])
         {{0, 1}, {1, 0}, {1, 1}, {2, 1}}, // T
     };
 
-    struct color color_tab[] = {/* Tableau contenant les couleurs des pièces */
-                                {"yellow", 255, 233, 38},
-                                {"cyan", 0, 255, 255},
-                                {"orange", 255, 140, 0},
-                                {"blue", 0, 0, 255},
-                                {"red", 255, 0, 0},
-                                {"lime green", 50, 205, 50},
-                                {"fuchsia", 255, 0, 255},
-                                {"black", 0, 0, 0},
-                                {"dark grey", 50, 50, 50}};
+    /* Tableau contenant les couleurs des pièces */
+    struct color color_tab[] = {
+        {"yellow", 255, 233, 38},
+        {"cyan", 0, 255, 255},
+        {"orange", 255, 140, 0},
+        {"blue", 0, 0, 255},
+        {"red", 255, 0, 0},
+        {"lime green", 50, 205, 50},
+        {"fuchsia", 255, 0, 255},
+        {"black", 0, 0, 0},
+        {"dark grey", 50, 50, 50}};
 
-    /* Initialisation du plateau de jeu vide */
-
-    for (int i = 0; i < HAUTEUR; i++)
-    {
-        for (int j = 0; j < LARGEUR; j++)
-        {
-            plateau_jeu[i][j].carre = VIDE;
-        }
-    }
-
-    /* Initialisation de la police */
+    /* Chargement de la police */
 
     TTF_Font *police = TTF_OpenFont("SDL2ttf/upheavtt.ttf", 27);
     if (police == NULL)
@@ -122,12 +110,15 @@ int main(int argc, char *argv[])
     }
 
     TTF_Font *title = TTF_OpenFont("SDL2ttf/upheavtt.ttf", 50);
-    if (police == NULL)
+    if (title == NULL)
     {
         fprintf(stderr, "ERREUR FATALE : Impossible de charger la police. TTF_OpenFont: %s\n", TTF_GetError());
         exit(1);
     }
 
+    /* Chargement des images */
+
+    SDL_Surface *logo;              
     logo = IMG_Load("textures/logo_cetris.png");
     if (logo == NULL)
     {
@@ -137,7 +128,7 @@ int main(int argc, char *argv[])
 
     /* OUVERTURE DE LA FENETRE GRAPHIQUE */
 
-    /*Creation de la fenetre */
+    /* Creation de la fenêtre */
 
     SDL_Window *fenetre = SDL_CreateWindow("CETRIS", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, L_FENETRE, H_FENETRE, SDL_WINDOW_SHOWN);
     if (fenetre == NULL)
@@ -162,6 +153,7 @@ int main(int argc, char *argv[])
 
     start_screen(&start_game, &end_game, Text, police, white, logo, renderer); /* Affichage de l'écran d'accueil */
 
+    /* Gestion de la sauvegarde */
     save = fopen("profile/save.bin", "rb");
     if (save == NULL)
     {
@@ -176,13 +168,8 @@ int main(int argc, char *argv[])
     }
     fclose(save);
 
-    /* Choix et creation de la première piece */
-    indice = rand() % 7;
-    initialiser(&tetromino, tab_pieces[indice], indice);
-
-    /* Choix et création de la première preview*/
-    indice = rand() % 7;
-    initialiser(&preview, tab_pieces[indice], indice);
+    /* Initialisation du tableau, et création des premières pièces */
+    initialiser_partie(&tetromino, &preview, plateau_jeu, tab_pieces, &indice, &cpt, &niveau, &score, &intervalle);
 
     /* Lecture des actions */
     do
@@ -234,12 +221,10 @@ int main(int argc, char *argv[])
             menu_pause(&Pause, &end_game, &retour_accueil, Text, police, title, white, renderer);
         }
 
-        if (retour_accueil) /* Retour à l'accueil depuis le menu pause */
+        if (retour_accueil)
         {
             start_game = FALSE;
-
             start_screen(&start_game, &end_game, Text, police, white, logo, renderer);
-
             Pause = FALSE;
             NewGame = TRUE;
             retour_accueil = FALSE;
@@ -250,27 +235,19 @@ int main(int argc, char *argv[])
             descente_OK = descendre(plateau_jeu, &tetromino);
             if (!descente_OK)
             {
-                /* Sauvegarde de la pièce dans le plateau */
-                for (int i = 0; i < 4; i++)
-                {
-                    int lig = tetromino.pos_ligne + tetromino.la_piece[i].ligne;
-                    int col = tetromino.pos_colonne + tetromino.la_piece[i].colonne;
-                    if (lig >= 0 && lig < HAUTEUR && col >= 0 && col < LARGEUR)
-                    {
-                        plateau_jeu[lig][col].carre = tetromino.type;
-                    }
-                }
+                /* Sauvegarde de la pièce dans le tableau */
+                sauvegarder_piece(tetromino, plateau_jeu);
 
                 /* Suppression des lignes et maj du score */
                 cpt += supprimer_lignes(plateau_jeu, &score);
 
-                /* on verifie si la partie est perdue */
+                /* On verifie si la partie est perdue */
                 if (partie_perdue(plateau_jeu) != 0)
                 {
                     end_screen(&NewGame, &end_game, &score, &HighScore, Text, SZofText, police, title, white, renderer);
                 }
 
-                /* on genère une nouvelle pièce */
+                /* On genère une nouvelle pièce */
                 tetromino = preview;
                 indice = rand() % 7;
                 initialiser(&preview, tab_pieces[indice], indice);
@@ -307,27 +284,19 @@ int main(int argc, char *argv[])
 
             /* On effectue les mêmes verifications que lorsque descente_OK == 0 car la pièce se retrouvera forcément en bas du plateau */
 
-            /* Sauvegarde de la pièce dans le plateau */
-            for (int i = 0; i < 4; i++)
-            {
-                int lig = tetromino.pos_ligne + tetromino.la_piece[i].ligne ;
-                int col = tetromino.pos_colonne + tetromino.la_piece[i].colonne;
-                if (lig >= 0 && lig < HAUTEUR && col >= 0 && col < LARGEUR)
-                {
-                    plateau_jeu[lig][col].carre = tetromino.type;
-                }
-            }
+            /* Sauvegarde de la pièce dans le tableau */
+            sauvegarder_piece(tetromino, plateau_jeu);
 
             /* Suppression des lignes et maj du score */
             cpt += supprimer_lignes(plateau_jeu, &score);
 
-            /* on verifie si la partie est perdue */
+            /* On verifie si la partie est perdue */
             if (partie_perdue(plateau_jeu))
             {
                 end_screen(&NewGame, &end_game, &score, &HighScore, Text, SZofText, police, title, white, renderer);
             }
 
-            /* on genère une nouvelle pièce */
+            /* On genère une nouvelle pièce */
             tetromino = preview;
             indice = rand() % 7;
             initialiser(&preview, tab_pieces[indice], indice);
@@ -337,32 +306,15 @@ int main(int argc, char *argv[])
 
         if (NewGame)
         {
-            for (int i = 0; i < HAUTEUR; i++)
-            {
-                for (int j = 0; j < LARGEUR; j++)
-                {
-                    plateau_jeu[i][j].carre = VIDE;
-                }
-            }
-            indice = rand() % 7;
-            initialiser(&tetromino, tab_pieces[indice], indice);
-            indice = rand() % 7;
-            initialiser(&preview, tab_pieces[indice], indice);
-            cpt = 0, niveau = 0, score = 0, intervalle = 500;
-
+            /* Reinitialisation de la partie */
+            initialiser_partie(&tetromino, &preview, plateau_jeu, tab_pieces, &indice, &cpt, &niveau, &score, &intervalle);
             NewGame = FALSE;
         }
 
         /* Gestion des niveaux */
         if (cpt >= CHANGEMENT_NIVEAU)
         {
-            SDL_RemoveTimer(horloge);
-            intervalle = intervalle - DIMINUTION_PERIODE;
-            if (intervalle < 50)
-                intervalle = 50; // Ajout d'une limite minimale
-            horloge = SDL_AddTimer(intervalle, at_top_horloge, NULL);
-            niveau++;
-            cpt = cpt - CHANGEMENT_NIVEAU;
+            changement_niveau(&horloge, &intervalle, &niveau, &cpt);
         }
 
         /* Gestion du rendu graphique*/
@@ -378,10 +330,11 @@ int main(int argc, char *argv[])
             SDL_SetRenderDrawColor(renderer, color_tab[7].r, color_tab[7].g, color_tab[7].b, 255);
             SDL_RenderPresent(renderer);
         }
-
+        
     } while (!end_game);
 
     TTF_CloseFont(police);
+    TTF_CloseFont(title);
     SDL_FreeSurface(logo);
     SDL_RemoveTimer(horloge);
     SDL_DestroyRenderer(renderer);

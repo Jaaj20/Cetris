@@ -3,6 +3,7 @@
 int descendre(struct plateau plateau_jeu[HAUTEUR][LARGEUR], struct piece *p_tetromino)
 {
     int i;
+
     /* Verification des cases libres en dessous de la pièce */
     for (i = 0; i < 4; i++)
     {
@@ -13,11 +14,13 @@ int descendre(struct plateau plateau_jeu[HAUTEUR][LARGEUR], struct piece *p_tetr
             return 0;
         }
     }
+
+    /* Descente de la pièce */
     for (i = 0; i < 4; i++)
     {
-        /* Descente de la pièce */
         (*p_tetromino).la_piece[i].ligne += 1;
     }
+
     return 1;
 }
 
@@ -25,6 +28,7 @@ void decaler_gauche(struct plateau plateau_jeu[HAUTEUR][LARGEUR], struct piece *
 {
     int i;
     int libre = 1;
+
     /* Verification des cases libres autour de la pièce */
     for (i = 0; i < 4; i++)
     {
@@ -35,6 +39,7 @@ void decaler_gauche(struct plateau plateau_jeu[HAUTEUR][LARGEUR], struct piece *
             libre = 0;
         }
     }
+
     /* Déplacement de la pièce */
     if (libre)
     {
@@ -49,6 +54,7 @@ void decaler_droite(struct plateau plateau_jeu[HAUTEUR][LARGEUR], struct piece *
 {
     int i;
     int libre = 1;
+
     /* Verification des cases libres autour de la pièce*/
     for (i = 0; i < 4; i++)
     {
@@ -59,6 +65,7 @@ void decaler_droite(struct plateau plateau_jeu[HAUTEUR][LARGEUR], struct piece *
             libre = 0;
         }
     }
+
     /* Déplacement de la pièce */
     if (libre)
     {
@@ -81,8 +88,7 @@ void rotation_gauche(struct plateau plateau_jeu[HAUTEUR][LARGEUR], struct piece 
         int cc = p_tetromino->la_piece[1].colonne;
         int cl = p_tetromino->la_piece[1].ligne;
 
-        /* Différence entre les coordonnées du bloc de la piece et son centre
-         pour obtenir les coordonnées relatives de chaque bloc */
+        /* Différence entre les coordonnées du bloc de la piece et son centre pour obtenir les coordonnées relatives de chaque bloc */
         int col = (*p_tetromino).la_piece[i].colonne - cc;
         int lig = (*p_tetromino).la_piece[i].ligne - cl;
 
@@ -123,8 +129,7 @@ void rotation_droite(struct plateau plateau_jeu[HAUTEUR][LARGEUR], struct piece 
         int cc = p_tetromino->la_piece[1].colonne;
         int cl = p_tetromino->la_piece[1].ligne;
 
-        /* Différence entre les coordonnées du bloc de la piece et son centre
-         pour obtenir les coordonnées relatives de chaque bloc */
+        /* Différence entre les coordonnées du bloc de la piece et son centre pour obtenir les coordonnées relatives de chaque bloc */
         int col = (*p_tetromino).la_piece[i].colonne - cc;
         int lig = (*p_tetromino).la_piece[i].ligne - cl;
 
@@ -142,6 +147,7 @@ void rotation_droite(struct plateau plateau_jeu[HAUTEUR][LARGEUR], struct piece 
             pos_tab[i].ligne = col + cl;
         }
     }
+    
     /* Application de la rotation */
     for (i = 0; i < 4; i++)
     {
